@@ -4,7 +4,7 @@ Datastore for Gophercon.dev
 ## Purpose
 This repo holds the conference data for [https://gophercon.dev]. To add or update a conference, create a PR with your change to `conferences.json`.
 
-## conference.json
+## conferences.json
 The data is stored as a JSON object. It contains a single `"Conferences"` key with a list of conferences.
 ```json
 {
