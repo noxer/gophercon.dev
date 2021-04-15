@@ -1,1 +1,110 @@
-
+{
+    "Conferences": [
+        {
+            "Name": "Template",
+            "Start": "2021-01-01T00:00:00.000Z",
+            "End": "2022-01-01T00:00:00.000Z",
+            "Locations": [
+                {
+                    "Label": "Berlin",
+                    "URL": "https://link-to-map"
+                }
+            ],
+            "Phases": [
+                {
+                    "Label": "Call for Papers",
+                    "URL": "",
+                    "Start": "2021-05-01T00:00:00.000Z",
+                    "End": "2021-05-10T00:00:00.000Z"
+                },
+                {
+                    "Label": "Registration",
+                    "URL": "",
+                    "Start": "2021-04-01T00:00:00.000Z",
+                    "End": "2021-05-26T00:00:00.000Z"
+                }
+            ],
+            "Links": [
+                {
+                    "Label": "Website",
+                    "URL": ""
+                },
+                {
+                    "Label": "Twitter",
+                    "URL": ""
+                },
+                {
+                    "Label": "Code of Conduct",
+                    "URL": ""
+                }
+            ],
+            "Cancelled": false,
+            "Hidden": true,
+            "Creator": "your handle or email address"
+        },
+        {
+            "Name": "Gophercon Europe 2021",
+            "Start": "2021-05-26T00:00:00.000Z",
+            "End": "2021-05-28T00:00:00.000Z",
+            "Locations": [
+                {
+                    "Label": "Online",
+                    "URL": ""
+                }
+            ],
+            "Phases": [
+                {
+                    "Label": "Registration",
+                    "URL": "https://www.eventbrite.com/e/gophercon-europe-2021-tickets-134271103485",
+                    "Start": "2021-04-01T00:00:00.000Z",
+                    "End": "2021-05-26T00:00:00.000Z"
+                }
+            ],
+            "Links": [
+                {
+                    "Label": "Website",
+                    "URL": "https://gophercon.eu/"
+                },
+                {
+                    "Label": "Twitter",
+                    "URL": "https://twitter.com/gopherconeu"
+                }
+            ],
+            "Cancelled": false,
+            "Hidden": false,
+            "Creator": "plusmid"
+        },
+        {
+            "Name": "GopherCon",
+            "Start": "2021-12-05T00:00:00.000Z",
+            "End": "2021-12-08T00:00:00.000Z",
+            "Locations": [
+                {
+                    "Label": "Online",
+                    "URL": ""
+                }
+            ],
+            "Phases": [
+                {
+                    "Label": "Call for Papers",
+                    "URL": "https://www.papercall.io/gophercon-2021",
+                    "Start": "1900-01-01T00:00:00.000Z",
+                    "End": "2021-04-21T23:59:00.000Z"
+                }
+            ],
+            "Links": [
+                {
+                    "Label": "Website",
+                    "URL": "https://www.gophercon.com/home"
+                },
+                {
+                    "Label": "Twitter",
+                    "URL": "https://twitter.com/GopherCon"
+                }
+            ],
+            "Cancelled": false,
+            "Hidden": false,
+            "Creator": "plusmid"
+        }
+    ]
+}
