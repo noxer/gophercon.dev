@@ -133,6 +133,39 @@
             "Cancelled": false,
             "Hidden": false,
             "Creator": "plusmid"
+        },
+        {
+            "Name": "GoWest Conference 2021",
+            "Start": "2021-10-22T15:00:00.000Z",
+            "End": "2021-10-23T06:00:00.000Z",
+            "Locations": [
+                {
+                    "Label": "Online",
+                    "URL": ""
+                }
+            ],
+            "Phases": [
+                {
+                    "Label": "Call for Papers",
+                    "URL": "https://www.papercall.io/gowestconf21",
+                    "Start": "1900-01-01T00:00:00.000Z",
+                    "End": "2021-05-07T19:25:00.000Z"
+                }
+            ],
+            "Links": [
+                {
+                    "Label": "Website",
+                    "URL": "https://www.gowestconf.com/"
+                },
+                {
+                    "Label": "Twitter",
+                    "URL": "https://twitter.com/gowestconf"
+                }
+            ],
+            "Cancelled": false,
+            "Hidden": false,
+            "Creator": "plusmid"
         }
+
     ]
 }
