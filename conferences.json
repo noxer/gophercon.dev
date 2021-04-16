@@ -105,6 +105,34 @@
             "Cancelled": false,
             "Hidden": false,
             "Creator": "plusmid"
+        },
+        {
+            "Name": "GopherCon Russia 2021",
+            "Start": "2021-04-23T00:00:00.000Z",
+            "End": "2021-04-25T00:00:00.000Z",
+            "Locations": [
+                {
+                    "Label": "Online",
+                    "URL": ""
+                }
+            ],
+            "Phases": [
+                {
+                    "Label": "Registration",
+                    "URL": "",
+                    "Start": "1900-01-01T00:00:00.000Z",
+                    "End": "2021-04-23T23:59:00.000Z"
+                }
+            ],
+            "Links": [
+                {
+                    "Label": "Website",
+                    "URL": "https://www.gophercon-russia.ru/en"
+                }
+            ],
+            "Cancelled": false,
+            "Hidden": false,
+            "Creator": "plusmid"
         }
     ]
 }
