@@ -169,7 +169,44 @@
             "Cancelled": false,
             "Hidden": false,
             "Creator": "plusmid"
+        },
+        {
+            "Name": "Conf42: Golang 2021",
+            "Start": "2021-06-24T09:00:00+01:00",
+            "End": "2021-06-25T00:00:00+01:00",
+            "Locations": [
+                {
+                    "Label": "Online",
+                    "URL": ""
+                }
+            ],
+            "Phases": [
+                {
+                    "Label": "Call for Papers",
+                    "URL": "https://www.papercall.io/conf42-golang-2021",
+                    "Start": "1900-01-01T00:00:00.000Z",
+                    "End": "2021-05-10T23:59:00.000Z"
+                },
+                {
+                    "Label": "Registration",
+                    "URL": "https://www.conf42.com/golang2021#register",
+                    "Start": "1900-01-01T00:00:00.000Z",
+                    "End": "2021-06-24T09:00:00+01:00"
+                }
+            ],
+            "Links": [
+                {
+                    "Label": "Website",
+                    "URL": "https://www.conf42.com/golang2021"
+                },
+                {
+                    "Label": "Twitter",
+                    "URL": "https://twitter.com/conf42com"
+                }
+            ],
+            "Cancelled": false,
+            "Hidden": false,
+            "Creator": "plusmid"
         }
-
     ]
 }
