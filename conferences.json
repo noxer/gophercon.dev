@@ -132,6 +132,14 @@
                 {
                     "Label": "Website",
                     "URL": "https://www.gophercon-russia.ru/en"
+                },
+                {
+                    "Label": "Recordings",
+                    "URL": "https://www.youtube.com/playlist?list=PLJTW0ZQ22rrF13VQbakM7MBiQcKb31mpk"
+                },
+                {
+                    "Label": "Slides",
+                    "URL": "https://github.com/GopherConRu/talks/tree/main/2021"
                 }
             ],
             "Cancelled": false,
