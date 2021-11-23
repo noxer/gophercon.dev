@@ -38,10 +38,6 @@
 			"End": "2021-12-08T00:00:00.000Z",
 			"Locations": [
 				{
-					"Label": "Marriott Marquis San Diego Marina",
-					"URL": "https://www.google.com/maps/place/Marriott+Marquis+San+Diego+Marina/@32.7091144,-117.1662334,15z/data=!4m8!3m7!1s0x0:0x68796363723141a6!5m2!4m1!1i2!8m2!3d32.7091144!4d-117.1662334"
-				},
-				{
 					"Label": "Online",
 					"URL": ""
 				}
