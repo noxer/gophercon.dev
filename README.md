@@ -67,7 +67,7 @@ A list of links to your website, Twitter account, Instagram, and Google Plus pag
 Set this to true in case the conference was cancelled. The list entry will appear with a red background. You should also add a phase "Cancelled" with a link to the cancellation announcement.
 
 ### Hidden
-This is usually set to false. The conference will be hidden from the list. The template conference in the file it set to hidden so it doesn't show up in the list.
+This is usually set to false. The conference will be hidden from the list. The template conference in the file it set to hidden so it doesn't show up on the website.
 
 ### Creator
 Your name, handle, or email address. This is not displayed on the page but is visible in the repo. Used to identify the author of a conference entry.
