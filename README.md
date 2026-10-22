@@ -52,6 +52,7 @@ data), `source`, and `license`.
   "status": "cancelled",               // optional: cancelled | rescheduled | tentative — see below
   "rescheduledFrom": "2027-04-14",     // optional: old startDate after any date move
   "scope": "track",                    // optional: broader conference with a Go track/devroom
+  "unverified": true,                  // optional temp: not human-checked — renders a tiny ? marker
   "website": "https://example.org/",   // the one "main" link
   "links": [                           // dated links get status annotations
     { "label": "CFP",             "url": "https://cfp.example.org/",
@@ -114,6 +115,13 @@ Housekeeping rules:
   make the track explicit ("Go talks inside a bigger conference"). The
   `go:` control defaults to `dedicated`, so track events are out of the
   default view (and out of the shared URL) unless someone asks for them.
+- **Unverified marker**: `"unverified": true` marks an entry that was drafted
+  without a human checking it against a source — every entry created by an AI
+  assistant carries it until the curator verifies it. The row renders a tiny
+  amber `?` (hover explains the ritual). To clear a marker, delete that one
+  line from the entry in `events.json` — verified rows lose the marker and
+  nothing else changes. `grep -c '"unverified"' events.json` tracks how much
+  review is left; entries nobody has eyeballed keep the flag.
 - **New regions/types need no code** — filter dropdowns are generated from
   whatever values appear in the file.
 - Old editions hide themselves: entries that ended over a week ago drop out

@@ -274,6 +274,14 @@ tr.cancelled .arw { color: var(--faint); }
 .status-tag.tentative { color: var(--dim); }
 /* go-track: partly in scope, so the border is dashed */
 .status-tag.scope { color: var(--dim); border-style: dashed; }
+/* unverified: AI-drafted entry awaiting human review — tiny, loud enough */
+.status-tag.unverified {
+  color: var(--amber);
+  border-style: dotted;
+  padding: 0 0.32rem;
+  font-weight: 700;
+  cursor: help;
+}
 
 .rel-tbc { color: var(--amber); }
 tr.tentative .iso { color: var(--dim); }

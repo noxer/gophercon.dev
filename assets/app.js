@@ -297,6 +297,12 @@
     if (tag) line.appendChild(el("span", "status-tag " + tag.cls, tag.text));
     if (ev.scope === "track")
       line.appendChild(el("span", "status-tag scope", "\u25D0 go track"));
+    if (ev.unverified) {
+      var uv = el("span", "status-tag unverified", "?");
+      uv.title = "unverified \u2014 nobody has checked this entry against a " +
+        "source yet; verify it, then delete \u201Cunverified\u201D from its events.json entry";
+      line.appendChild(uv);
+    }
     cell.appendChild(line);
 
     var note = el("div", "note");

@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 9,
   "updated": "2026-10-22",
   "source": "https://go.dev/wiki/Conferences",
   "license": "CC0-1.0",
@@ -30,11 +30,13 @@
     "cfpDeadline": "DEPRECATED v1 field — if present, it is merged into the CFP link endsAt",
     "status": "optional: \"cancelled\" | \"rescheduled\" (moved, new date not announced — never auto-hidden until updated) | \"tentative\" (announced, dates not confirmed: startDate/endDate are a curator estimate, rendered with ≈ and tbc). Absent = scheduled.",
     "rescheduledFrom": "optional YYYY-MM-DD — the original startDate when dates move in EITHER direction (postponed or pulled forward). Edit startDate/endDate to the new dates and set this; the site tags the row \"rescheduled from <old date>\"",
-    "scope": "optional: \"track\" — a broader (multi-topic) conference with a dedicated Go track/devroom; renders a ◐ go track tag and is filterable. Absent = Go-focused event."
+    "scope": "optional: \"track\" — a broader (multi-topic) conference with a dedicated Go track/devroom; renders a ◐ go track tag and is filterable. Absent = Go-focused event.",
+    "unverified": "temporary flag (true): the entry was drafted without a human checking the details against a source — renders as a tiny amber ? marker; delete the field once the entry has been verified or corrected."
   },
   "events": [
     {
       "id": "golab-2026",
+      "unverified": true,
       "title": "GoLab 2026",
       "description": "Italy's long-running Go conference in Bologna: Go core topics plus web, cloud-native, security, databases and observability tracks.",
       "startDate": "2026-11-01",
@@ -62,6 +64,7 @@
     },
     {
       "id": "gophercon-india-2026",
+      "unverified": true,
       "title": "GopherCon India 2026",
       "description": "The community-run Go conference in India — a single-track day of talks covering concurrency, tooling, cloud-native Go and community topics.",
       "startDate": "2026-11-22",
@@ -84,6 +87,7 @@
     },
     {
       "id": "gophercon-japan-2027",
+      "unverified": true,
       "title": "GopherCon Japan 2027",
       "description": "The Japanese Go community's annual conference in Tokyo, with full-length talks and lightning talks.",
       "startDate": "2027-02-13",
@@ -106,6 +110,7 @@
     },
     {
       "id": "gophercon-europe-2027",
+      "unverified": true,
       "title": "GopherCon Europe 2027",
       "description": "Europe's biggest Go gathering celebrates its 10th year in Berlin, running together with HeyAI: backends, cloud and platforms that stay fast and reliable at scale. Early-bird tickets until 1 December 2026.",
       "startDate": "2027-06-14",
@@ -129,6 +134,7 @@
     },
     {
       "id": "gophercon-israel-2026",
+      "unverified": true,
       "title": "GopherCon Israel 2026",
       "description": "The Israeli Go community's one-day conference in Tel Aviv.",
       "startDate": "2026-10-18",
@@ -146,6 +152,7 @@
     },
     {
       "id": "gophercon-china-2026",
+      "unverified": true,
       "title": "GopherCon China 2026",
       "description": "One of the largest Go community events in China, two days of talks in Shanghai.",
       "startDate": "2026-10-15",
@@ -168,6 +175,7 @@
     },
     {
       "id": "tinygo-conf-2026",
+      "unverified": true,
       "title": "TinyGo Conf 2026",
       "description": "A conference about TinyGo, embedded Go development and Go-powered hardware projects, held in Tokyo.",
       "startDate": "2026-10-10",
@@ -184,6 +192,7 @@
     },
     {
       "id": "go-conference-2026",
+      "unverified": true,
       "title": "Go Conference 2026",
       "description": "Japan's long-running community Go Conference, organized by the local Go community in Tokyo.",
       "startDate": "2026-09-11",
@@ -205,6 +214,7 @@
     },
     {
       "id": "gophercon-latam-2026",
+      "unverified": true,
       "title": "GopherCon LatAm 2026",
       "description": "The Latin-American Go community conference, three days of talks in Florianópolis, Brazil.",
       "startDate": "2026-09-02",
@@ -222,6 +232,7 @@
     },
     {
       "id": "gophercon-2026",
+      "unverified": true,
       "title": "GopherCon 2026",
       "description": "The flagship North-American Go conference: four days of talks, workshops, community day and the challenge series at the Seattle Convention Center.",
       "startDate": "2026-08-03",
@@ -249,6 +260,7 @@
     },
     {
       "id": "gophercon-uk-2026",
+      "unverified": true,
       "title": "GopherCon UK 2026",
       "description": "The UK's Go conference: a workshop day plus two multi-track conference days at The Brewery in London, with 400+ attendees.",
       "startDate": "2026-08-11",
@@ -280,6 +292,7 @@
     },
     {
       "id": "gophercon-africa-2026",
+      "unverified": true,
       "title": "GopherCon Africa 2026",
       "description": "The pan-African Go community conference, bringing together Go developers from across the continent in Johannesburg.",
       "startDate": "2026-08-06",
@@ -297,6 +310,7 @@
     },
     {
       "id": "gophercon-europe-2026",
+      "unverified": true,
       "title": "GopherCon Europe 2026",
       "description": "Europe's largest Go conference: several days of talks, open hacking and workshops at the Umweltforum Berlin, with ~350 engineers a day from 30+ countries.",
       "startDate": "2026-06-15",
@@ -324,6 +338,7 @@
     },
     {
       "id": "gophercon-singapore-2026",
+      "unverified": true,
       "title": "GopherCon Singapore 2026",
       "description": "The Asia-Pacific region's Go community conference, three days in Singapore.",
       "startDate": "2026-05-20",
@@ -341,6 +356,7 @@
     },
     {
       "id": "gophercamp-2026",
+      "unverified": true,
       "title": "GopherCamp 2026",
       "description": "Central Europe's community Go unconference in Brno — an intimate weekend of sessions, hack time and exchange among Go developers.",
       "startDate": "2026-04-23",
@@ -358,6 +374,7 @@
     },
     {
       "id": "golangconf-2026",
+      "unverified": true,
       "title": "GolangConf 2026",
       "description": "The Go community conference from Moscow, one day of talks on Go development, tools and practice.",
       "startDate": "2026-04-20",
@@ -379,6 +396,7 @@
     },
     {
       "id": "gophercon-2021",
+      "unverified": true,
       "title": "GopherCon 2021",
       "description": "The North-American Go conference as a hybrid: in-person in San Diego plus a full online track.",
       "startDate": "2021-12-05",
@@ -406,6 +424,7 @@
     },
     {
       "id": "gophercon-europe-2020",
+      "unverified": true,
       "title": "GopherCon Europe 2020",
       "description": "The first GopherCon Europe — remembered as “GopherCon Berlin” from its gophercon.berlin domain. Announced for Festsaal Kreuzberg, moved online 15–18 June 2020 when the pandemic hit; the Berlin line continues as today’s GopherCon Europe.",
       "startDate": "2020-06-15",
@@ -429,6 +448,7 @@
     },
     {
       "id": "gophercon-2027",
+      "unverified": true,
       "title": "GopherCon 2027",
       "description": "Announced, dates TBC — start is a curator estimate based on recent editions (late Jul/early Aug). Organizers say the Call for Speakers opens 2027-01-18.",
       "startDate": "2027-08-02",
@@ -445,6 +465,7 @@
     },
     {
       "id": "devfest-berlin-2026",
+      "unverified": true,
       "title": "DevFest Berlin 2026",
       "description": "GDG Berlin’s community-run developer festival — multi-topic (Android, Web, Cloud, AI) with a dedicated “Go & Backend” track organized together with GDG Berlin Golang.",
       "startDate": "2026-11-14",
@@ -469,6 +490,7 @@
     },
     {
       "id": "fosdem-2027",
+      "unverified": true,
       "title": "FOSDEM 2027",
       "description": "Brussels’ free open-source developer festival with a dedicated Go devroom — Go talks inside a much bigger, multi-language conference. Dates estimated from the traditional first weekend of February.",
       "startDate": "2027-02-06",
