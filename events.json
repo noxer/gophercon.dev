@@ -395,6 +395,29 @@
       ]
     },
     {
+      "id": "gophercon-europe-2020",
+      "title": "GopherCon Europe 2020",
+      "description": "The first GopherCon Europe — remembered as “GopherCon Berlin” from its gophercon.berlin domain. Announced for Festsaal Kreuzberg, moved online 15–18 June 2020 when the pandemic hit; the Berlin line continues as today’s GopherCon Europe.",
+      "startDate": "2020-06-15",
+      "endDate": "2020-06-18",
+      "locations": [
+        {
+          "city": "Berlin",
+          "country": "Germany",
+          "region": "Europe",
+          "url": "https://www.openstreetmap.org/way/277805717"
+        }
+      ],
+      "type": "conference",
+      "website": "https://gophercon.berlin/",
+      "links": [
+        {
+          "label": "Talk videos",
+          "url": "https://www.youtube.com/playlist?list=PLtoVuM73AmsKnUvoFizEmvWo0BbegkSIG"
+        }
+      ]
+    },
+    {
       "id": "gophercon-2027",
       "title": "GopherCon 2027",
       "description": "Announced, dates TBC — start is a curator estimate based on recent editions (late Jul/early Aug). Organizers say the Call for Speakers opens 2027-01-18.",
@@ -407,6 +430,30 @@
           "label": "CFP",
           "url": "https://www.gophercon.com/",
           "startsAt": "2027-01-18"
+        }
+      ]
+    },
+    {
+      "id": "devfest-berlin-2026",
+      "title": "DevFest Berlin 2026",
+      "description": "GDG Berlin’s community-run developer festival — multi-topic (Android, Web, Cloud, AI) with a dedicated “Go & Backend” track organized together with GDG Berlin Golang.",
+      "startDate": "2026-11-14",
+      "endDate": "2026-11-14",
+      "scope": "track",
+      "locations": [
+        {
+          "city": "Berlin",
+          "country": "Germany",
+          "region": "Europe",
+          "url": "https://www.openstreetmap.org/way/1341514920"
+        }
+      ],
+      "type": "community",
+      "website": "https://2026.devfest-berlin.de/",
+      "links": [
+        {
+          "label": "GDG Berlin Golang",
+          "url": "https://gdg.community.dev/gdg-berlin-golang/"
         }
       ]
     },
