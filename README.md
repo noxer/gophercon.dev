@@ -213,6 +213,39 @@ Serve the folder locally (`python3 -m http.server 8000`) — opening the page
 via `file://` won't work because the browser blocks fetching local JSON; the
 page then shows a hint instead of events.
 
-It's pure static files, so any static host works for the `gophercon.dev`
-domain: GitHub Pages, Netlify, Cloudflare Pages, S3… (e.g. Cloudflare Pages:
-build command *none*, output directory `/`.)
+## Hosting on GitHub Pages
+
+Pure static files, so Pages serves the repo **as-is from a branch** — no
+build step, no extra workflow (`.nojekyll` opts the deploy out of Jekyll
+processing; the `check-links.yml` workflow is CI only and doesn't deploy):
+
+1. Create a **public** repo named `gophercon.dev`, push `main`.
+2. Repo **Settings → Pages → Source: Deploy from a branch** → `main` /
+   **(root)**. Live at `https://<you>.github.io/gophercon.dev/` within a minute.
+3. Custom domain `gophercon.dev` — do DNS **first**, at whoever serves the
+   domain's zone:
+   - `A` records for `@` (the apex): `185.199.108.153`, `185.199.109.153`,
+     `185.199.110.153`, `185.199.111.153`
+     (or a flattened `CNAME`/`ALIAS`/`ANAME` at `@` if the provider supports it,
+     e.g. Cloudflare)
+   - `CNAME` for `www` → `<you>.github.io`
+   Then enter `gophercon.dev` in Settings → Pages and enable *Enforce HTTPS*.
+   GitHub issues certs for apex and www when both are configured — mandatory
+   anyway, since the entire `.dev` TLD is HTTPS-only (HSTS preloaded).
+   A `CNAME` file appears in the repo; commit it so config is reproducible.
+   **Until the DNS points at GitHub, keep the domain unset** — with a custom
+   domain configured, the `.github.io` URL 301-redirects to the domain and
+   nothing resolves.
+4. Replace `YOUR-USERNAME` in the two footer links in `index.html`
+   (suggestion box / report a change) — issue forms only exist once the
+   repo does.
+
+Domain verification (Settings → Pages → verify, DNS `TXT` record) is
+recommended by GitHub to prevent domain-takeover conflicts with other users.
+
+What comes free once the repo is public: the **issue forms** (footer →
+*suggest an event* / *report a change*), the **monthly link-check Action**,
+and public data reuse — point fetchers at
+`https://raw.githubusercontent.com/<you>/gophercon.dev/main/events.json`
+(see *Reusing the data*: Pages itself sends no CORS headers, the raw
+endpoints do).
