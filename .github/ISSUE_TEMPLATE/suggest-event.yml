@@ -1,0 +1,73 @@
+name: Suggest an event
+description: Propose a Go event (conference, meetup, or one with a Go track) for the list
+title: "[suggest] "
+labels: ["event-suggestion"]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: Event name
+      placeholder: GopherCon Example 2027
+    validations:
+      required: true
+
+  - type: input
+    id: dates
+    attributes:
+      label: Dates
+      description: As exact as known — e.g. "2027-05-12 – 2027-05-14", "May 2027", or "TBD"
+      placeholder: 2027-05-12 – 2027-05-14
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: Location
+      description: City and country; "Online"; or several joined with "+" for hybrid events
+      placeholder: Exampleville, Exampleland
+    validations:
+      required: true
+
+  - type: input
+    id: website
+    attributes:
+      label: Website
+      placeholder: https://…
+    validations:
+      required: true
+
+  - type: textarea
+    id: links
+    attributes:
+      label: Other links
+      description: CFP, schedule, venue, tickets… one URL per line, optionally prefixed with a label
+      render: text
+      placeholder: |
+        cfp: https://…
+        https://…
+
+  - type: textarea
+    id: description
+    attributes:
+      label: One or two sentences about the event
+      description: This shows up in the listing — keep it short and factual
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Go-focused, or a Go track inside a larger event?
+      options:
+        - Go-focused (conference / meetup / community event about Go)
+        - Go track / devroom inside a larger, multi-topic conference
+    validations:
+      required: true
+
+  - type: input
+    id: source
+    attributes:
+      label: Where did you hear about it?
+      description: A link we can use to confirm the details (optional)
+      placeholder: https://…

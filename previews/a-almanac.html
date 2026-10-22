@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview A — The Almanac (editorial ledger)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f6f2e9; --panel: #efe9db; --ink: #191611; --muted: #77705f;
+    --hair: #d9d1bf; --cyan: #0a7e99; --cyan-ink: #064e60; --rust: #b44a2c;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink);
+    font-family: "Fraunces", Georgia, serif; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 2rem; }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+
+  .masthead { display: flex; justify-content: space-between; align-items: baseline;
+    padding: 1.4rem 0 0.4rem; }
+  .brand { font-size: 0.85rem; letter-spacing: 0.04em; color: var(--cyan-ink); font-weight: 500; }
+  .stats { font-size: 0.75rem; color: var(--muted); }
+
+  h1 { font-weight: 900; font-size: clamp(2.4rem, 6vw, 4rem); line-height: 1.02;
+    letter-spacing: -0.02em; margin: 1.2rem 0 0.2rem; }
+  h1 em { font-weight: 400; font-style: italic; color: var(--cyan-ink); }
+  .sub { color: var(--muted); font-size: 1.05rem; max-width: 46ch; margin: 0 0 1.6rem; }
+
+  .filters { display: flex; gap: 2rem; padding: 0.9rem 0 1.1rem;
+    border-top: 1px solid var(--ink); border-bottom: 3px double var(--hair);
+    font-size: 0.8rem; }
+  .filters input { border: 0; background: none; border-bottom: 1px solid var(--muted);
+    font: 400 0.9rem "IBM Plex Mono", monospace; color: var(--ink); width: 30ch;
+    padding: 0.2rem 0.1rem; }
+  .filters span { cursor: pointer; }
+  .filters .cur { color: var(--cyan-ink); border-bottom: 1px solid currentColor; }
+
+  .month { display: flex; align-items: center; gap: 1rem; margin: 2.2rem 0 0.2rem; }
+  .month .name { font-size: 0.75rem; letter-spacing: 0.28em; color: var(--muted); }
+  .month .rule { flex: 1; border-bottom: 1px solid var(--hair); }
+
+  .entry { display: grid; grid-template-columns: 7.5rem 1fr 13rem; gap: 1.5rem;
+    padding: 1.4rem 0 1.3rem; border-bottom: 1px solid var(--hair); }
+  .entry:hover { background: var(--panel); }
+  .entry .date { text-align: right; }
+  .entry .day { font-size: 2.7rem; font-weight: 900; line-height: 0.95; letter-spacing: -0.02em; }
+  .entry .mon { font-size: 0.72rem; letter-spacing: 0.2em; color: var(--muted); }
+  .entry h2 { font-size: 1.55rem; font-weight: 600; margin: 0 0 0.3rem; letter-spacing: -0.01em; }
+  .entry p { margin: 0 0 0.6rem; font-size: 0.95rem; color: #3d382d; max-width: 52ch; }
+  .entry .links { font-size: 0.75rem; color: var(--cyan-ink); }
+  .entry .links b { border-bottom: 1px solid currentColor; font-weight: 500; margin-right: 1rem; }
+  .entry .where { font-size: 0.8rem; color: var(--muted); text-align: right; line-height: 1.8; }
+  .entry .where .cd { color: var(--rust); }
+  .entry.past .day, .entry.past h2 { color: var(--muted); }
+
+  footer { margin: 3rem 0 2rem; font-size: 0.72rem; color: var(--muted);
+    border-top: 1px solid var(--hair); padding-top: 0.8rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="masthead mono">
+    <span class="brand">gophercon.dev</span>
+    <span class="stats">16 events · 4 upcoming · curated from go.dev/wiki</span>
+  </div>
+
+  <h1>The Go event <em>almanac</em></h1>
+  <p class="sub">Conferences and community gatherings for engineers who ship
+  with Go. Entries older than a week fade out.</p>
+
+  <div class="filters mono">
+    <input value="search title, place, people…" readonly>
+    <span class="cur">all regions ↓</span>
+    <span>all types ↓</span>
+    <span>past · 10 hidden</span>
+  </div>
+
+  <div class="month"><span class="name mono">NOVEMBER 2026</span><span class="rule"></span></div>
+
+  <article class="entry">
+    <div class="date"><div class="day">01</div><div class="mon mono">NOV — 03 · 2026</div></div>
+    <div>
+      <h2>GoLab 2026</h2>
+      <p>Italy's long-running Go conference: Go core plus web, cloud-native, security, databases and observability.</p>
+      <div class="links mono"><b>Website ↗</b></div>
+    </div>
+    <div class="where mono">Bologna, Italy · Europe<br><span class="cd">in 10 days</span></div>
+  </article>
+
+  <article class="entry">
+    <div class="date"><div class="day">22</div><div class="mon mono">NOV · 2026</div></div>
+    <div>
+      <h2>GopherCon India 2026</h2>
+      <p>The community-run Indian Go conference — a single track of concurrency, tooling and cloud-native Go.</p>
+      <div class="links mono"><b>Website ↗</b><b>CFP ↗</b></div>
+    </div>
+    <div class="where mono">Hyderabad, India · Asia<br><span class="cd">in one month</span></div>
+  </article>
+
+  <div class="month"><span class="name mono">OCTOBER 2026</span><span class="rule"></span></div>
+
+  <article class="entry past">
+    <div class="date"><div class="day">18</div><div class="mon mono">OCT · 2026</div></div>
+    <div>
+      <h2>GopherCon Israel 2026</h2>
+      <p>The Israeli Go community's one-day conference in Tel Aviv.</p>
+      <div class="links mono"><b>Website ↗</b></div>
+    </div>
+    <div class="where mono">Tel Aviv, Israel · Asia<br>4 days ago · recent</div>
+  </article>
+
+  <article class="entry past">
+    <div class="date"><div class="day">15</div><div class="mon mono">OCT — 16 · 2026</div></div>
+    <div>
+      <h2>GopherCon China 2026</h2>
+      <p>One of the largest Go community events in China, two days of talks in Shanghai.</p>
+      <div class="links mono"><b>Website ↗</b><b>CFP ↗</b></div>
+    </div>
+    <div class="where mono">Shanghai, China · Asia<br>6 days ago · recent</div>
+  </article>
+
+  <div class="month"><span class="name mono">FEBRUARY 2027</span><span class="rule"></span></div>
+
+  <article class="entry">
+    <div class="date"><div class="day">13</div><div class="mon mono">FEB — 14 · 2027</div></div>
+    <div>
+      <h2>GopherCon Japan 2027</h2>
+      <p>The Japanese Go community's annual conference — full talks and lightning talks.</p>
+      <div class="links mono"><b>Website ↗</b><b>CFP ↗</b></div>
+    </div>
+    <div class="where mono">Tokyo, Japan · Asia<br><span class="cd">in 4 months</span></div>
+  </article>
+
+  <footer class="mono">PREVIEW A — editorial almanac: big typographic dates, month rails, ledger rows instead of cards. Not functional.</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview C — Lineup poster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #fbfbf8; --ink: #101010; --muted: #6f6f6a; --hair: #10101022;
+    --cyan: #00add8;
+    --disp: "Space Grotesk", -apple-system, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, monospace; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--disp); }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 2rem; }
+
+  .top { display: flex; justify-content: space-between; align-items: baseline;
+    padding-top: 1.6rem; font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+  .top b { color: var(--ink); font-weight: 500; }
+
+  .title { font-weight: 700; text-transform: uppercase; letter-spacing: -0.03em;
+    line-height: 0.92; font-size: clamp(3rem, 11vw, 7.5rem); margin: 1.6rem 0 0.6rem; }
+  .title .thin { font-weight: 400; color: var(--muted); }
+  .title .dot { color: var(--cyan); }
+
+  .filterbar { display: flex; flex-wrap: wrap; gap: 1.2rem; font-family: var(--mono);
+    font-size: 0.8rem; color: var(--muted); padding: 1.1rem 0;
+    border-top: 2px solid var(--ink); margin-top: 1.6rem; }
+  .filterbar .act { color: var(--ink); }
+  .filterbar .act::before { content: "●"; color: var(--cyan); font-size: 0.7em;
+    vertical-align: middle; margin-right: 0.4em; }
+  .filterbar .search { margin-left: auto; color: var(--ink); }
+  .filterbar .search::after { content: "▌"; color: var(--cyan); }
+
+  .row { display: grid; grid-template-columns: 4.5rem 1fr 11rem; gap: 1.8rem;
+    align-items: baseline; padding: 1.7rem 0 1.5rem; border-top: 1px solid var(--hair);
+    transition: transform 120ms ease; }
+  .row:first-of-type { border-top: 0; }
+  .row:hover { transform: translateX(6px); }
+  .row .num { font-size: 2rem; font-weight: 700; color: transparent;
+    -webkit-text-stroke: 1.5px var(--ink); font-family: var(--disp); }
+  .row:hover .num { color: var(--cyan); -webkit-text-stroke: 0; }
+  .row h2 { margin: 0 0 0.35rem; font-size: clamp(1.5rem, 3.4vw, 2.3rem); font-weight: 700;
+    text-transform: uppercase; letter-spacing: -0.015em; line-height: 1.05; }
+  .row .desc { margin: 0; font-family: var(--mono); font-size: 0.8rem; color: var(--muted);
+    max-width: 58ch; }
+  .row .tag { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--muted); margin-right: 0.8rem; }
+  .row .tag b { color: var(--cyan); font-weight: 500; }
+  .row .when { font-family: var(--mono); text-align: right; font-size: 1.25rem;
+    font-weight: 500; line-height: 1.35; }
+  .row .when small { display: block; font-size: 0.72rem; color: var(--muted);
+    letter-spacing: 0.12em; text-transform: uppercase; margin-top: 0.25rem; }
+  .row.past .num, .row.past h2 { color: var(--muted); -webkit-text-stroke-color: var(--muted); }
+  .row.past .when { color: var(--muted); }
+  .row.past:hover { transform: none; }
+
+  footer { border-top: 2px solid var(--ink); margin: 2.4rem 0 2rem; padding-top: 0.8rem;
+    font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <span><b>gophercon<span style="color:var(--cyan)">.dev</span></b> — curated go gatherings</span>
+    <span>16 EVENTS · UPDATED 22 OCT 2026</span>
+  </div>
+
+  <h1 class="title">GO EVENTS<br><span class="thin">WORLD</span><span class="dot">WIDE</span></h1>
+
+  <div class="filterbar">
+    <span class="act">ALL</span><span>EUROPE</span><span>ASIA</span><span>AFRICA</span>
+    <span>S. AMERICA</span><span>CONFERENCES</span><span>COMMUNITY</span>
+    <span class="search">SEARCH “berlin</span>
+  </div>
+
+  <div class="row">
+    <span class="num">01</span>
+    <div>
+      <h2>GoLab 2026</h2>
+      <p class="desc">Bologna, Italy — Go core, cloud-native, security, databases. <b style="color:var(--cyan)">website ↗</b></p>
+    </div>
+    <div class="when">01—03<small>Nov 2026 · in 10 days</small></div>
+  </div>
+
+  <div class="row">
+    <span class="num">02</span>
+    <div>
+      <h2>GopherCon India 2026</h2>
+      <p class="desc">Hyderabad — single-track community day. <b style="color:var(--cyan)">website ↗</b> <b style="color:var(--cyan)">cfp ↗</b></p>
+    </div>
+    <div class="when">22<small>Nov 2026 · in 1 month</small></div>
+  </div>
+
+  <div class="row past">
+    <span class="num">03</span>
+    <div>
+      <h2>GopherCon Israel 2026</h2>
+      <p class="desc">Tel Aviv — one-day community conference. <span style="color:var(--muted)">recent · shown within 7d window</span></p>
+    </div>
+    <div class="when">18<small>Oct 2026 · 4 days ago</small></div>
+  </div>
+
+  <div class="row">
+    <span class="num">04</span>
+    <div>
+      <h2>GopherCon Japan 2027</h2>
+      <p class="desc">Tokyo — talks + lightning talks. <b style="color:var(--cyan)">website ↗</b> <b style="color:var(--cyan)">cfp open ↗</b></p>
+    </div>
+    <div class="when">13—14<small>Feb 2027 · CFP open</small></div>
+  </div>
+
+  <div class="row">
+    <span class="num">05</span>
+    <div>
+      <h2>GopherCon Europe 2027</h2>
+      <p class="desc">Berlin — 10th edition, co-run with HeyAI. Early-bird until 1 Dec. <b style="color:var(--cyan)">website ↗</b></p>
+    </div>
+    <div class="when">14—17<small>Jun 2027 · in 8 months</small></div>
+  </div>
+
+  <footer>PREVIEW C — festival-lineup poster: oversized display type, stroke numbers, hairline rows, filter row set as typographic buttons. Not functional.</footer>
+</div>
+</body>
+</html>

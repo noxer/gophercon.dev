@@ -1,0 +1,438 @@
+{
+  "version": 8,
+  "updated": "2026-10-22",
+  "source": "https://go.dev/wiki/Conferences",
+  "license": "CC0-1.0",
+  "schema": {
+    "id": "unique slug",
+    "title": "event name",
+    "description": "one or two short sentences",
+    "startDate": "YYYY-MM-DD (first day)",
+    "endDate": "YYYY-MM-DD (last day, optional, defaults to startDate)",
+    "locations": [
+      {
+        "city": "one entry per location; multiple entries = multi-city or hybrid (use region \"Online\" for the virtual part)",
+        "country": "",
+        "region": "Africa | Asia | Europe | North America | South America | Oceania | Online",
+        "url": "optional — map link for THIS location, preferably OpenStreetMap (renders with ⌖ in the location column); venue pages belong in links[] as a \"Venue\" link"
+      }
+    ],
+    "type": "conference | community | workshop | meetup | online",
+    "website": "the one main link to the event website",
+    "links": [
+      {
+        "label": "link name (CFP, Schedule, Tickets, Pre-registration, Videos)",
+        "url": "target URL",
+        "startsAt": "YYYY-MM-DD, optional — when this link/window opens (CFP opening, pre-registration start)",
+        "endsAt": "YYYY-MM-DD, optional — when it closes; the site annotates open links with the closing date"
+      }
+    ],
+    "cfpDeadline": "DEPRECATED v1 field — if present, it is merged into the CFP link endsAt",
+    "status": "optional: \"cancelled\" | \"rescheduled\" (moved, new date not announced — never auto-hidden until updated) | \"tentative\" (announced, dates not confirmed: startDate/endDate are a curator estimate, rendered with ≈ and tbc). Absent = scheduled.",
+    "rescheduledFrom": "optional YYYY-MM-DD — the original startDate when dates move in EITHER direction (postponed or pulled forward). Edit startDate/endDate to the new dates and set this; the site tags the row \"rescheduled from <old date>\"",
+    "scope": "optional: \"track\" — a broader (multi-topic) conference with a dedicated Go track/devroom; renders a ◐ go track tag and is filterable. Absent = Go-focused event."
+  },
+  "events": [
+    {
+      "id": "golab-2026",
+      "title": "GoLab 2026",
+      "description": "Italy's long-running Go conference in Bologna: Go core topics plus web, cloud-native, security, databases and observability tracks.",
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-03",
+      "type": "conference",
+      "website": "https://golab.io/",
+      "links": [],
+      "locations": [
+        {
+          "city": "Bologna",
+          "country": "Italy",
+          "region": "Europe"
+        }
+      ]
+    },
+    {
+      "id": "gophercon-india-2026",
+      "title": "GopherCon India 2026",
+      "description": "The community-run Go conference in India — a single-track day of talks covering concurrency, tooling, cloud-native Go and community topics.",
+      "startDate": "2026-11-22",
+      "type": "community",
+      "website": "https://gopherconindia.org/",
+      "links": [
+        {
+          "label": "CFP",
+          "url": "https://cfp.gopherconindia.org/",
+          "endsAt": "2026-08-23"
+        }
+      ],
+      "locations": [
+        {
+          "city": "Hyderabad",
+          "country": "India",
+          "region": "Asia"
+        }
+      ]
+    },
+    {
+      "id": "gophercon-japan-2027",
+      "title": "GopherCon Japan 2027",
+      "description": "The Japanese Go community's annual conference in Tokyo, with full-length talks and lightning talks.",
+      "startDate": "2027-02-13",
+      "endDate": "2027-02-14",
+      "type": "community",
+      "website": "https://gophercon.jp/2027/",
+      "links": [
+        {
+          "label": "CFP",
+          "url": "https://gophercon.jp/2027/cfp/"
+        }
+      ],
+      "locations": [
+        {
+          "city": "Tokyo",
+          "country": "Japan",
+          "region": "Asia"
+        }
+      ]
+    },
+    {
+      "id": "gophercon-europe-2027",
+      "title": "GopherCon Europe 2027",
+      "description": "Europe's biggest Go gathering celebrates its 10th year in Berlin, running together with HeyAI: backends, cloud and platforms that stay fast and reliable at scale. Early-bird tickets until 1 December 2026.",
+      "startDate": "2027-06-14",
+      "endDate": "2027-06-17",
+      "type": "conference",
+      "website": "https://gophercon.eu/",
+      "links": [
+        {
+          "label": "Venue",
+          "url": "https://besondere-orte.com/de/locations/umweltforum"
+        }
+      ],
+      "locations": [
+        {
+          "city": "Berlin",
+          "country": "Germany",
+          "region": "Europe",
+          "url": "https://www.openstreetmap.org/node/3776428050"
+        }
+      ]
+    },
+    {
+      "id": "gophercon-israel-2026",
+      "title": "GopherCon Israel 2026",
+      "description": "The Israeli Go community's one-day conference in Tel Aviv.",
+      "startDate": "2026-10-18",
+      "type": "community",
+      "website": "https://www.gophercon.org.il/",
+      "links": [],
+      "locations": [
+        {
+          "city": "Tel Aviv",
+          "country": "Israel",
+          "region": "Asia"
+        }
+      ],
+      "status": "cancelled"
+    },
+    {
+      "id": "gophercon-china-2026",
+      "title": "GopherCon China 2026",
+      "description": "One of the largest Go community events in China, two days of talks in Shanghai.",
+      "startDate": "2026-10-15",
+      "endDate": "2026-10-16",
+      "type": "community",
+      "website": "https://gophercon.com.cn/",
+      "links": [
+        {
+          "label": "CFP",
+          "url": "https://gophercon.com.cn/zh/cfp/"
+        }
+      ],
+      "locations": [
+        {
+          "city": "Shanghai",
+          "country": "China",
+          "region": "Asia"
+        }
+      ]
+    },
+    {
+      "id": "tinygo-conf-2026",
+      "title": "TinyGo Conf 2026",
+      "description": "A conference about TinyGo, embedded Go development and Go-powered hardware projects, held in Tokyo.",
+      "startDate": "2026-10-10",
+      "type": "conference",
+      "website": "https://conf.tinygo-keeb.org/2026",
+      "links": [],
+      "locations": [
+        {
+          "city": "Tokyo",
+          "country": "Japan",
+          "region": "Asia"
+        }
+      ]
+    },
+    {
+      "id": "go-conference-2026",
+      "title": "Go Conference 2026",
+      "description": "Japan's long-running community Go Conference, organized by the local Go community in Tokyo.",
+      "startDate": "2026-09-11",
+      "type": "community",
+      "website": "https://gocon.jp/2026/en",
+      "links": [
+        {
+          "label": "Session archive",
+          "url": "https://sessionize.com/go-conference-2026"
+        }
+      ],
+      "locations": [
+        {
+          "city": "Tokyo",
+          "country": "Japan",
+          "region": "Asia"
+        }
+      ]
+    },
+    {
+      "id": "gophercon-latam-2026",
+      "title": "GopherCon LatAm 2026",
+      "description": "The Latin-American Go community conference, three days of talks in Florianópolis, Brazil.",
+      "startDate": "2026-09-02",
+      "endDate": "2026-09-04",
+      "type": "community",
+      "website": "https://gopherconlatam.org/",
+      "links": [],
+      "locations": [
+        {
+          "city": "Florianópolis",
+          "country": "Brazil",
+          "region": "South America"
+        }
+      ]
+    },
+    {
+      "id": "gophercon-2026",
+      "title": "GopherCon 2026",
+      "description": "The flagship North-American Go conference: four days of talks, workshops, community day and the challenge series at the Seattle Convention Center.",
+      "startDate": "2026-08-03",
+      "endDate": "2026-08-06",
+      "type": "conference",
+      "website": "https://www.gophercon.com/",
+      "links": [
+        {
+          "label": "Agenda",
+          "url": "https://www.gophercon.com/agenda"
+        },
+        {
+          "label": "Venue",
+          "url": "https://www.gophercon.com/venue"
+        }
+      ],
+      "locations": [
+        {
+          "city": "Seattle",
+          "country": "USA",
+          "region": "North America",
+          "url": "https://www.openstreetmap.org/way/891389327"
+        }
+      ]
+    },
+    {
+      "id": "gophercon-uk-2026",
+      "title": "GopherCon UK 2026",
+      "description": "The UK's Go conference: a workshop day plus two multi-track conference days at The Brewery in London, with 400+ attendees.",
+      "startDate": "2026-08-11",
+      "endDate": "2026-08-13",
+      "type": "conference",
+      "website": "https://www.gophercon.co.uk/",
+      "links": [
+        {
+          "label": "Schedule",
+          "url": "https://www.gophercon.co.uk/schedule"
+        },
+        {
+          "label": "Tickets",
+          "url": "https://www.gophercon.co.uk/tickets"
+        },
+        {
+          "label": "Venue",
+          "url": "https://www.thebrewery.co.uk/"
+        }
+      ],
+      "locations": [
+        {
+          "city": "London",
+          "country": "UK",
+          "region": "Europe",
+          "url": "https://www.openstreetmap.org/way/160279485"
+        }
+      ]
+    },
+    {
+      "id": "gophercon-africa-2026",
+      "title": "GopherCon Africa 2026",
+      "description": "The pan-African Go community conference, bringing together Go developers from across the continent in Johannesburg.",
+      "startDate": "2026-08-06",
+      "endDate": "2026-08-07",
+      "type": "community",
+      "website": "https://gopherconf.co.za/",
+      "links": [],
+      "locations": [
+        {
+          "city": "Johannesburg",
+          "country": "South Africa",
+          "region": "Africa"
+        }
+      ]
+    },
+    {
+      "id": "gophercon-europe-2026",
+      "title": "GopherCon Europe 2026",
+      "description": "Europe's largest Go conference: several days of talks, open hacking and workshops at the Umweltforum Berlin, with ~350 engineers a day from 30+ countries.",
+      "startDate": "2026-06-15",
+      "endDate": "2026-06-18",
+      "type": "conference",
+      "website": "https://gophercon.eu/",
+      "links": [
+        {
+          "label": "Talk videos",
+          "url": "https://www.youtube.com/@GopherConEurope"
+        },
+        {
+          "label": "Venue",
+          "url": "https://besondere-orte.com/de/locations/umweltforum"
+        }
+      ],
+      "locations": [
+        {
+          "city": "Berlin",
+          "country": "Germany",
+          "region": "Europe",
+          "url": "https://www.openstreetmap.org/node/3776428050"
+        }
+      ]
+    },
+    {
+      "id": "gophercon-singapore-2026",
+      "title": "GopherCon Singapore 2026",
+      "description": "The Asia-Pacific region's Go community conference, three days in Singapore.",
+      "startDate": "2026-05-20",
+      "endDate": "2026-05-22",
+      "type": "community",
+      "website": "https://2026.gophercon.sg/",
+      "links": [],
+      "locations": [
+        {
+          "city": "Singapore",
+          "country": "Singapore",
+          "region": "Asia"
+        }
+      ]
+    },
+    {
+      "id": "gophercamp-2026",
+      "title": "GopherCamp 2026",
+      "description": "Central Europe's community Go unconference in Brno — an intimate weekend of sessions, hack time and exchange among Go developers.",
+      "startDate": "2026-04-23",
+      "endDate": "2026-04-24",
+      "type": "community",
+      "website": "https://gophercamp.cz/",
+      "links": [],
+      "locations": [
+        {
+          "city": "Brno",
+          "country": "Czechia",
+          "region": "Europe"
+        }
+      ]
+    },
+    {
+      "id": "golangconf-2026",
+      "title": "GolangConf 2026",
+      "description": "The Go community conference from Moscow, one day of talks on Go development, tools and practice.",
+      "startDate": "2026-04-20",
+      "type": "community",
+      "website": "https://golangconf.ru/2026",
+      "links": [
+        {
+          "label": "CFP archive",
+          "url": "https://cfp.golangconf.ru/en"
+        }
+      ],
+      "locations": [
+        {
+          "city": "Moscow",
+          "country": "Russia",
+          "region": "Europe"
+        }
+      ]
+    },
+    {
+      "id": "gophercon-2021",
+      "title": "GopherCon 2021",
+      "description": "The North-American Go conference as a hybrid: in-person in San Diego plus a full online track.",
+      "startDate": "2021-12-05",
+      "endDate": "2021-12-08",
+      "locations": [
+        {
+          "city": "San Diego",
+          "country": "USA",
+          "region": "North America"
+        },
+        {
+          "city": "Online",
+          "country": "",
+          "region": "Online"
+        }
+      ],
+      "type": "conference",
+      "website": "https://www.gophercon.com/",
+      "links": [
+        {
+          "label": "Talk videos",
+          "url": "https://www.youtube.com/@GopherAcademy"
+        }
+      ]
+    },
+    {
+      "id": "gophercon-2027",
+      "title": "GopherCon 2027",
+      "description": "Announced, dates TBC — start is a curator estimate based on recent editions (late Jul/early Aug). Organizers say the Call for Speakers opens 2027-01-18.",
+      "startDate": "2027-08-02",
+      "status": "tentative",
+      "type": "conference",
+      "website": "https://www.gophercon.com/",
+      "links": [
+        {
+          "label": "CFP",
+          "url": "https://www.gophercon.com/",
+          "startsAt": "2027-01-18"
+        }
+      ]
+    },
+    {
+      "id": "fosdem-2027",
+      "title": "FOSDEM 2027",
+      "description": "Brussels’ free open-source developer festival with a dedicated Go devroom — Go talks inside a much bigger, multi-language conference. Dates estimated from the traditional first weekend of February.",
+      "startDate": "2027-02-06",
+      "endDate": "2027-02-07",
+      "status": "tentative",
+      "scope": "track",
+      "locations": [
+        {
+          "city": "Brussels",
+          "country": "Belgium",
+          "region": "Europe"
+        }
+      ],
+      "type": "conference",
+      "website": "https://fosdem.org/",
+      "links": [
+        {
+          "label": "Go devroom CFP",
+          "url": "https://github.com/go-devroom/cfp"
+        }
+      ]
+    }
+  ]
+}

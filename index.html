@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>gophercon.dev — go events, worldwide</title>
+  <meta name="description" content="A curated list of upcoming Go conferences and community events around the world. Search, filter, keyboard-driven.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='14' fill='%230a1220'/><rect x='6' y='6' width='88' height='88' rx='10' fill='none' stroke='%2300d3f0' stroke-width='8'/><text x='50' y='66' font-family='monospace' font-size='44' font-weight='bold' text-anchor='middle' fill='%2300d3f0'>g</text></svg>">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <span class="brand"><b>gophercon<span class="tld">.dev</span></b> — go events, worldwide</span>
+      <span id="counts" class="counts"></span>
+    </header>
+
+    <section class="hero" aria-live="polite">
+      <div id="cmd" class="cmd" aria-hidden="true"></div>
+      <p id="hero-next" class="next"></p>
+      <p id="hero-meta" class="hero-meta"></p>
+    </section>
+
+    <section class="controls" aria-label="Search and filters">
+      <label class="ctl ctl-search">
+        <span class="key">/</span>
+        <input id="search" type="search" placeholder="search" autocomplete="off"
+               aria-label="Search title, description, location">
+      </label>
+      <span class="ctl">
+        region:
+        <select id="region" aria-label="Filter by region"></select>
+      </span>
+      <span class="ctl">
+        type:
+        <select id="type" aria-label="Filter by event type"></select>
+      </span>
+      <span class="ctl">
+        go:
+        <select id="scope" aria-label="Filter by Go scope">
+          <option value="all">all</option>
+          <option value="dedicated">dedicated</option>
+          <option value="track">go-track</option>
+        </select>
+      </span>
+      <label class="ctl ctl-toggle">
+        <input type="checkbox" id="show-past">
+        <span class="box" aria-hidden="true"></span>
+        <span id="show-past-label">show past events</span>
+      </label>
+      <button id="clear-filters" class="ctl ctl-btn" type="button" hidden>reset</button>
+    </section>
+
+    <p id="meta" class="meta" role="status"></p>
+
+    <table class="events">
+      <thead>
+        <tr>
+          <th class="col-date">date</th>
+          <th class="col-event">event</th>
+          <th class="col-loc">location</th>
+          <th class="col-when">relative</th>
+        </tr>
+      </thead>
+      <tbody id="list-upcoming"></tbody>
+      <tr id="past-separator" class="separator" hidden>
+        <td colspan="4">──&nbsp;&nbsp;recently past&nbsp;&nbsp;────────────────────────────────</td>
+      </tr>
+      <tbody id="list-past"></tbody>
+    </table>
+
+    <p id="load-error" class="empty" hidden></p>
+
+    <p id="empty" class="empty" hidden>
+      0 matches — try a different query or
+      <button id="reset-empty" class="ctl-btn-inline" type="button">reset filters</button>
+    </p>
+
+    <footer class="site-footer">
+      <p class="keys">
+        <b>keyboard:</b> <span class="kc">/</span> search ·
+        <span class="kc">p</span> past on/off ·
+        <span class="kc">j/k</span> move ·
+        <span class="kc">←/→</span> link ·
+        <span class="kc">1-9</span> jump to link ·
+        <span class="kc">enter</span> open selected ·
+        <span class="kc">esc</span> reset
+      </p>
+      <p class="muted">
+        curated from the <a href="https://go.dev/wiki/Conferences" rel="noopener" target="_blank">official go conference list</a> + event sites —
+        <a href="https://github.com/YOUR-USERNAME/gophercon.dev/issues/new?template=suggest-event.yml" rel="noopener" target="_blank">suggest an event ↗</a> ·
+        wrong info? <a href="https://github.com/YOUR-USERNAME/gophercon.dev/issues/new?template=report-event.yml" rel="noopener" target="_blank">report a change ↗</a> ·
+        or edit <a href="events.json"><code>events.json</code></a> directly.
+        local meetup? <a href="https://www.meetup.com/pro/go" rel="noopener" target="_blank">meetup.com/pro/go</a>
+      </p>
+    </footer>
+  </div>
+
+  <noscript><p class="wrap empty">this page needs javascript to list and filter events.</p></noscript>
+
+  <script src="assets/app.js" defer></script>
+</body>
+</html>

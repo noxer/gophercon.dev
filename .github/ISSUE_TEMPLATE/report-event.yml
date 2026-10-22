@@ -1,0 +1,44 @@
+name: Report a change
+description: Cancelled, moved, new dates, or a broken link for a listed event
+title: "[change] "
+labels: ["event-change"]
+body:
+  - type: input
+    id: event
+    attributes:
+      label: Which event?
+      description: Name or the id from events.json (visible in the URL-less row; just the name is fine)
+      placeholder: GopherCon Example 2027
+    validations:
+      required: true
+
+  - type: dropdown
+    id: what
+    attributes:
+      label: What changed?
+      options:
+        - Cancelled
+        - Moved to new dates (postponed or pulled forward)
+        - New venue / location
+        - CFP opened, closed, or extended
+        - Dates announced (were TBD)
+        - Link is broken
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: details
+    attributes:
+      label: Details
+      description: New dates, corrected link, new venue…
+      placeholder: moved to 2027-06-04 – 2027-06-05
+
+  - type: input
+    id: source
+    attributes:
+      label: Source link
+      description: Where can we confirm this? (announcement, tweet, org page…)
+      placeholder: https://…
+    validations:
+      required: true
