@@ -111,7 +111,9 @@ Housekeeping rules:
   half-full glyph reads "partly Go" — and the `go:` dropdown filters
   `all | dedicated | go-track`. Absent `scope` = Go-focused event; that's
   the majority, so most entries never mention it. The description should
-  make the track explicit ("Go talks inside a bigger conference").
+  make the track explicit ("Go talks inside a bigger conference"). The
+  `go:` control defaults to `dedicated`, so track events are out of the
+  default view (and out of the shared URL) unless someone asks for them.
 - **New regions/types need no code** — filter dropdowns are generated from
   whatever values appear in the file.
 - Old editions hide themselves: entries that ended over a week ago drop out
@@ -165,6 +167,16 @@ itself doesn't send CORS headers, the raw endpoints do.
 
 ## Behavior
 
+- **Filters live in the URL** — only non-default ones appear as query params:
+  `?q=berlin&go=all&past=1`. Refresh the page or share the URL and the exact
+  same view comes back; the browser Back button steps through filter changes
+  (search typing updates the URL in place instead of spamming history);
+  nonsense values in hand-edited share links fall back to defaults and get
+  normalized away. On `file://` browsers block the History API, so URL sync
+  quietly no-ops — everything else still works.
+- **Go scope:** the `go:` filter defaults to `dedicated` — the default list
+  shows Go-focused events; choose `all` or `go-track` to bring FOSDEM/DevFest
+  style events in.
 - **Past events:** an event is considered past once its *end* date is over.
   Events that ended more than 7 days ago are hidden by default; the
   `[x] show 10 past` toggle reveals them below a `── recently past ──` rule.

@@ -91,7 +91,9 @@
 
   // ---------- state ----------
 
-  var state = { q: "", region: "all", type: "all", scope: "all", showPast: false };
+  var DEFAULT_SCOPE = "dedicated"; // go: default — go-track events stay out of
+  // the default view until asked for (the list is about Go events, after all)
+  var state = { q: "", region: "all", type: "all", scope: DEFAULT_SCOPE, showPast: false };
   var selIndex = -1;      // j/k row selection
   var linkIndex = 0;      // which link of the selected row is "entered" (\u2190/\u2192, 1-9)
   var renderedRows = [];
@@ -193,6 +195,63 @@
   function isHiddenByDefault(ev, today) {
     if (ev.status === "rescheduled") return false;
     return endDateOf(ev) < new Date(today.getTime() - 7 * DAY);
+  }
+
+  // ---------- filter state in the URL (refresh/share restores the view) ----------
+
+  // Only non-default filters appear: ?q= &region= &type= &go= &past=1 — the
+  // bare URL is the default view. Discrete control changes push a history
+  // entry (back steps through the filter sequence); search typing and init
+  // normalize in place. On file:// browsers block History, so sync no-ops.
+
+  function currentQuery() {
+    var p = new URLSearchParams();
+    if (state.q) p.set("q", state.q);
+    if (state.region !== "all") p.set("region", state.region);
+    if (state.type !== "all") p.set("type", state.type);
+    if (state.scope !== DEFAULT_SCOPE) p.set("go", state.scope);
+    if (state.showPast) p.set("past", "1");
+    return p.toString();
+  }
+
+  function syncURL(push) {
+    var qs = currentQuery();
+    var target = location.pathname + (qs ? "?" + qs : "");
+    if (target === location.pathname + location.search) return;
+    try {
+      if (push) history.pushState(null, "", target);
+      else history.replaceState(null, "", target);
+    } catch (e) { /* History unavailable (file://) — URL is a nicety, not core */ }
+  }
+
+  function stateFromURL() {
+    var p = new URLSearchParams(location.search);
+    state.q = (p.get("q") || "").trim();
+    state.region = p.get("region") || "all";
+    state.type = p.get("type") || "all";
+    var go = p.get("go");
+    state.scope = (go === "all" || go === "dedicated" || go === "track")
+      ? go : DEFAULT_SCOPE;
+    state.showPast = p.get("past") === "1";
+    selIndex = -1;
+  }
+
+  // push parsed URL state into the controls; typo'd region/type values
+  // from hand-edited share links fall back to "all"
+  function applyControls() {
+    els.search.value = state.q;
+    els.region.value = state.region;
+    if (els.region.value !== state.region) {
+      state.region = "all";
+      els.region.value = "all";
+    }
+    els.type.value = state.type;
+    if (els.type.value !== state.type) {
+      state.type = "all";
+      els.type.value = "all";
+    }
+    els.scope.value = state.scope;
+    els.showPast.checked = state.showPast;
   }
 
   // ---------- rendering ----------
@@ -298,7 +357,7 @@
     if (state.q) cmdParts.push('--query="' + state.q + '"');
     if (state.region !== "all") cmdParts.push('--region="' + state.region + '"');
     if (state.type !== "all") cmdParts.push('--type="' + state.type + '"');
-    if (state.scope !== "all") cmdParts.push('--go="' + state.scope + '"');
+    if (state.scope !== DEFAULT_SCOPE) cmdParts.push('--go="' + state.scope + '"');
     els.cmd.textContent = "\u276F " + cmdParts.join(" ");
 
     if (!next) {
@@ -372,7 +431,7 @@
     els.pastSeparator.hidden = past.length === 0;
     els.empty.hidden = visible.length !== 0;
     els.clearFilters.hidden = !(state.q || state.region !== "all" ||
-      state.type !== "all" || state.scope !== "all" || state.showPast);
+      state.type !== "all" || state.scope !== DEFAULT_SCOPE || state.showPast);
 
     renderHero(upcoming.filter(isCountdownEligible)[0], today);
 
@@ -401,6 +460,8 @@
     els.showPastLabel.textContent =
       (state.showPast ? "hide " : "show ") +
       (pastTotal > 0 ? pastTotal + " past" : "past events");
+
+    syncURL(false);
   }
 
   // ---------- keyboard navigation (j/k selection) ----------
@@ -509,36 +570,48 @@
   els.region.addEventListener("change", function () {
     state.region = els.region.value;
     selIndex = -1;
+    syncURL(true);
     render();
   });
   els.type.addEventListener("change", function () {
     state.type = els.type.value;
     selIndex = -1;
+    syncURL(true);
     render();
   });
   els.scope.addEventListener("change", function () {
     state.scope = els.scope.value;
     selIndex = -1;
+    syncURL(true);
     render();
   });
   els.showPast.addEventListener("change", function () {
     state.showPast = els.showPast.checked;
     selIndex = -1;
+    syncURL(true);
     render();
   });
 
   function resetFilters() {
-    state = { q: "", region: "all", type: "all", scope: "all", showPast: false };
+    state = { q: "", region: "all", type: "all", scope: DEFAULT_SCOPE, showPast: false };
     els.search.value = "";
     els.region.value = "all";
     els.type.value = "all";
-    els.scope.value = "all";
+    els.scope.value = DEFAULT_SCOPE;
     els.showPast.checked = false;
     selIndex = -1;
+    syncURL(true);
     render();
   }
   els.clearFilters.addEventListener("click", resetFilters);
   els.resetEmpty.addEventListener("click", resetFilters);
+
+  // back/forward between pushed filter states
+  window.addEventListener("popstate", function () {
+    stateFromURL();
+    applyControls();
+    render();
+  });
 
   function fillSelect(select, values) {
     var all = el("option", null, "all");
@@ -566,6 +639,8 @@
     fillSelect(els.type, uniqueSorted(events.map(function (ev) {
       return ev.type;
     })));
+    stateFromURL();
+    applyControls();
     render();
   }
 
