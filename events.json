@@ -41,12 +41,22 @@
       "endDate": "2026-11-03",
       "type": "conference",
       "website": "https://golab.io/",
-      "links": [],
+      "links": [
+        {
+          "label": "Tickets",
+          "url": "https://golab.io/tickets26"
+        },
+        {
+          "label": "Schedule",
+          "url": "https://golab.io/schedule"
+        }
+      ],
       "locations": [
         {
           "city": "Bologna",
           "country": "Italy",
-          "region": "Europe"
+          "region": "Europe",
+          "url": "https://www.openstreetmap.org/node/292608543"
         }
       ]
     },
