@@ -149,9 +149,8 @@ No backend — the box is **GitHub issue forms** (`.github/ISSUE_TEMPLATE/`):
 - **report-event.yml** — "what changed?" dropdown (cancelled / moved /
   broken link / dates announced…) for fixing listed events.
 
-The site footer links to both. **Before deploying, replace `YOUR-USERNAME`
-in the footer links in `index.html`** with the GitHub org/user that owns the
-repo — the forms only work once the repo exists on GitHub.
+The site footer links to both (`noxer/gophercon.dev`) — the forms become
+live the moment this repo is on GitHub, nothing else to wire up.
 
 Triage loop (roughly weekly, or when notified):
 
@@ -169,7 +168,7 @@ link rot filed *by* the community as report-a-change issues.
 
 `events.json` is public, licensed CC0, and the canonical URL is
 `https://gophercon.dev/events.json`. Point people to
-`https://raw.githubusercontent.com/<you>/gophercon.dev/main/events.json`
+`https://raw.githubusercontent.com/noxer/gophercon.dev/main/events.json`
 (or jsDelivr) when they want to `fetch()` it from another site — GitHub Pages
 itself doesn't send CORS headers, the raw endpoints do.
 
@@ -221,14 +220,14 @@ processing; the `check-links.yml` workflow is CI only and doesn't deploy):
 
 1. Create a **public** repo named `gophercon.dev`, push `main`.
 2. Repo **Settings → Pages → Source: Deploy from a branch** → `main` /
-   **(root)**. Live at `https://<you>.github.io/gophercon.dev/` within a minute.
+   **(root)**. Live at `https://noxer.github.io/gophercon.dev/` within a minute.
 3. Custom domain `gophercon.dev` — do DNS **first**, at whoever serves the
    domain's zone:
    - `A` records for `@` (the apex): `185.199.108.153`, `185.199.109.153`,
      `185.199.110.153`, `185.199.111.153`
      (or a flattened `CNAME`/`ALIAS`/`ANAME` at `@` if the provider supports it,
      e.g. Cloudflare)
-   - `CNAME` for `www` → `<you>.github.io`
+   - `CNAME` for `www` → `noxer.github.io`
    Then enter `gophercon.dev` in Settings → Pages and enable *Enforce HTTPS*.
    GitHub issues certs for apex and www when both are configured — mandatory
    anyway, since the entire `.dev` TLD is HTTPS-only (HSTS preloaded).
@@ -236,9 +235,6 @@ processing; the `check-links.yml` workflow is CI only and doesn't deploy):
    **Until the DNS points at GitHub, keep the domain unset** — with a custom
    domain configured, the `.github.io` URL 301-redirects to the domain and
    nothing resolves.
-4. Replace `YOUR-USERNAME` in the two footer links in `index.html`
-   (suggestion box / report a change) — issue forms only exist once the
-   repo does.
 
 Domain verification (Settings → Pages → verify, DNS `TXT` record) is
 recommended by GitHub to prevent domain-takeover conflicts with other users.
@@ -246,6 +242,14 @@ recommended by GitHub to prevent domain-takeover conflicts with other users.
 What comes free once the repo is public: the **issue forms** (footer →
 *suggest an event* / *report a change*), the **monthly link-check Action**,
 and public data reuse — point fetchers at
-`https://raw.githubusercontent.com/<you>/gophercon.dev/main/events.json`
+`https://raw.githubusercontent.com/noxer/gophercon.dev/main/events.json`
 (see *Reusing the data*: Pages itself sends no CORS headers, the raw
 endpoints do).
+
+## History
+
+This repo continues the original gophercon.dev — a community-curated
+conference list that ran in 2020–2021 from a single `conferences.json`
+(its full curation and PR history is preserved in this repo's git log;
+`git show 9b7fe2e:conferences.json`). The old editions are all long past,
+so nothing was carried over — the new `events.json` supersedes it.
