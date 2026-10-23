@@ -64,7 +64,6 @@
     },
     {
       "id": "gophercon-india-2026",
-      "unverified": true,
       "title": "GopherCon India 2026",
       "description": "The community-run Go conference in India — a one-day of talks covering concurrency, tooling, cloud-native Go and community topics.",
       "startDate": "2026-11-22",
