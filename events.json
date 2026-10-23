@@ -149,9 +149,8 @@
     },
     {
       "id": "gophercon-israel-2026",
-      "unverified": true,
       "title": "GopherCon Israel 2026",
-      "description": "The Israeli Go community's one-day conference in Tel Aviv.",
+      "description": "The Israeli Go community’s one-day conference at Expo – Bitan 10, Tel Aviv, planned for 18 October 2026 — cancelled by the organizers.",
       "startDate": "2026-10-18",
       "type": "conference",
       "website": "https://www.gophercon.org.il/",
@@ -229,7 +228,6 @@
     },
     {
       "id": "gophercon-latam-2026",
-      "unverified": true,
       "title": "GopherCon LatAm 2026",
       "description": "The Latin-American Go community conference, three days of talks in Florianópolis, Brazil.",
       "startDate": "2026-09-02",
@@ -241,7 +239,8 @@
         {
           "city": "Florianópolis",
           "country": "Brazil",
-          "region": "South America"
+          "region": "South America",
+          "url": "https://www.openstreetmap.org/way/129944788"
         }
       ]
     },
@@ -307,19 +306,24 @@
     },
     {
       "id": "gophercon-africa-2026",
-      "unverified": true,
       "title": "GopherCon Africa 2026",
-      "description": "The pan-African Go community conference, bringing together Go developers from across the continent in Johannesburg.",
-      "startDate": "2026-08-06",
-      "endDate": "2026-08-07",
+      "description": "GopherCon Africa’s third edition — a workshop day plus two days of talks in Nairobi, a series that rotates across the continent’s Go hubs.",
+      "startDate": "2026-10-15",
+      "endDate": "2026-10-17",
       "type": "conference",
-      "website": "https://gopherconf.co.za/",
-      "links": [],
+      "website": "https://gophercon.africa/",
+      "links": [
+        {
+          "label": "Venue",
+          "url": "https://prideinnhotels.com/"
+        }
+      ],
       "locations": [
         {
-          "city": "Johannesburg",
-          "country": "South Africa",
-          "region": "Africa"
+          "city": "Nairobi",
+          "country": "Kenya",
+          "region": "Africa",
+          "url": "https://www.openstreetmap.org/way/553077556"
         }
       ]
     },
@@ -370,21 +374,44 @@
     },
     {
       "id": "gophercamp-2026",
-      "unverified": true,
       "title": "GopherCamp 2026",
-      "description": "Central Europe's community Go unconference in Brno — an intimate weekend of sessions, hack time and exchange among Go developers.",
+      "description": "The Go conference in the Czech Republic: a hands-on workshop day and a day of curated talks in Brno, run by the local Go community for ~200 attendees.",
       "startDate": "2026-04-23",
       "endDate": "2026-04-24",
-      "type": "community",
+      "type": "conference",
+      "website": "https://2026.gophercamp.cz/",
+      "links": [
+        {
+          "label": "Venue",
+          "url": "https://clubco.cz/"
+        }
+      ],
+      "locations": [
+        {
+          "city": "Brno",
+          "country": "Czechia",
+          "region": "Europe",
+          "url": "https://www.openstreetmap.org/node/8848071783"
+        }
+      ]
+    },
+    {
+      "id": "gophercamp-2027",
+      "title": "GopherCamp 2027",
+      "startDate": "2027-04-22",
+      "endDate": "2027-04-23",
+      "type": "conference",
       "website": "https://gophercamp.cz/",
-      "links": [],
+      "description": "The Czech Go community’s conference returns to Brno for its third edition: workshop day plus a day of talks.",
       "locations": [
         {
           "city": "Brno",
           "country": "Czechia",
           "region": "Europe"
         }
-      ]
+      ],
+      "links": [],
+      "unverified": true
     },
     {
       "id": "golangconf-2026",
