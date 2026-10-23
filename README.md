@@ -49,7 +49,10 @@ data), `source`, and `license`.
     { "city": "Online", "country": "", "region": "Online" }   // hybrid event
   ],
   // region: Africa | Asia | Europe | North America | South America | Oceania | Online
-  "type": "conference",                // conference | community | workshop | meetup | online
+  "type": "conference",                // conference | community — the event's
+                                       // shape (scheduled, ticketed program vs a
+                                       // free/unconf-style local gathering), not
+                                       // who runs it: all GopherCons are conferences
   "status": "cancelled",               // optional: cancelled | rescheduled | tentative — see below
   "rescheduledFrom": "2027-04-14",     // optional: old startDate after any date move
   "scope": "track",                    // optional: broader conference with a Go track/devroom

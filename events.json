@@ -1,6 +1,6 @@
 {
-  "version": 9,
-  "updated": "2026-10-22",
+  "version": 10,
+  "updated": "2026-10-23",
   "source": "https://go.dev/wiki/Conferences",
   "license": "CC0-1.0",
   "schema": {
@@ -68,7 +68,7 @@
       "title": "GopherCon India 2026",
       "description": "The community-run Go conference in India — a single-track day of talks covering concurrency, tooling, cloud-native Go and community topics.",
       "startDate": "2026-11-22",
-      "type": "community",
+      "type": "conference",
       "website": "https://gopherconindia.org/",
       "links": [
         {
@@ -92,7 +92,7 @@
       "description": "The Japanese Go community's annual conference in Tokyo, with full-length talks and lightning talks.",
       "startDate": "2027-02-13",
       "endDate": "2027-02-14",
-      "type": "community",
+      "type": "conference",
       "website": "https://gophercon.jp/2027/",
       "links": [
         {
@@ -138,7 +138,7 @@
       "title": "GopherCon Israel 2026",
       "description": "The Israeli Go community's one-day conference in Tel Aviv.",
       "startDate": "2026-10-18",
-      "type": "community",
+      "type": "conference",
       "website": "https://www.gophercon.org.il/",
       "links": [],
       "locations": [
@@ -157,7 +157,7 @@
       "description": "One of the largest Go community events in China, two days of talks in Shanghai.",
       "startDate": "2026-10-15",
       "endDate": "2026-10-16",
-      "type": "community",
+      "type": "conference",
       "website": "https://gophercon.com.cn/",
       "links": [
         {
@@ -196,7 +196,7 @@
       "title": "Go Conference 2026",
       "description": "Japan's long-running community Go Conference, organized by the local Go community in Tokyo.",
       "startDate": "2026-09-11",
-      "type": "community",
+      "type": "conference",
       "website": "https://gocon.jp/2026/en",
       "links": [
         {
@@ -219,7 +219,7 @@
       "description": "The Latin-American Go community conference, three days of talks in Florianópolis, Brazil.",
       "startDate": "2026-09-02",
       "endDate": "2026-09-04",
-      "type": "community",
+      "type": "conference",
       "website": "https://gopherconlatam.org/",
       "links": [],
       "locations": [
@@ -297,7 +297,7 @@
       "description": "The pan-African Go community conference, bringing together Go developers from across the continent in Johannesburg.",
       "startDate": "2026-08-06",
       "endDate": "2026-08-07",
-      "type": "community",
+      "type": "conference",
       "website": "https://gopherconf.co.za/",
       "links": [],
       "locations": [
@@ -343,7 +343,7 @@
       "description": "The Asia-Pacific region's Go community conference, three days in Singapore.",
       "startDate": "2026-05-20",
       "endDate": "2026-05-22",
-      "type": "community",
+      "type": "conference",
       "website": "https://2026.gophercon.sg/",
       "links": [],
       "locations": [
@@ -378,7 +378,7 @@
       "title": "GolangConf 2026",
       "description": "The Go community conference from Moscow, one day of talks on Go development, tools and practice.",
       "startDate": "2026-04-20",
-      "type": "community",
+      "type": "conference",
       "website": "https://golangconf.ru/2026",
       "links": [
         {
