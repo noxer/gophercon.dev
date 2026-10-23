@@ -98,7 +98,6 @@
     },
     {
       "id": "gophercon-japan-2027",
-      "unverified": true,
       "title": "GopherCon Japan 2027",
       "description": "The Japanese Go community's annual conference in Tokyo, with full-length talks and lightning talks.",
       "startDate": "2027-02-13",
@@ -108,14 +107,20 @@
       "links": [
         {
           "label": "CFP",
-          "url": "https://gophercon.jp/2027/cfp/"
+          "url": "https://gophercon.jp/2027/cfp/",
+          "endsAt": "2026-10-25"
+        },
+        {
+          "label": "Venue",
+          "url": "https://www.cyberagent.co.jp/en/corporate/access/"
         }
       ],
       "locations": [
         {
           "city": "Tokyo",
           "country": "Japan",
-          "region": "Asia"
+          "region": "Asia",
+          "url": "https://www.openstreetmap.org/way/1493582798"
         }
       ]
     },
@@ -189,24 +194,28 @@
     },
     {
       "id": "tinygo-conf-2026",
-      "unverified": true,
       "title": "TinyGo Conf 2026",
       "description": "A conference about TinyGo, embedded Go development and Go-powered hardware projects, held in Tokyo.",
       "startDate": "2026-10-10",
       "type": "conference",
       "website": "https://conf.tinygo-keeb.org/2026",
-      "links": [],
+      "links": [
+        {
+          "label": "Recap",
+          "url": "https://tinygo-keeb.org/blog/?p=348"
+        }
+      ],
       "locations": [
         {
           "city": "Tokyo",
           "country": "Japan",
-          "region": "Asia"
+          "region": "Asia",
+          "url": "https://www.openstreetmap.org/node/7176648670"
         }
       ]
     },
     {
       "id": "go-conference-2026",
-      "unverified": true,
       "title": "Go Conference 2026",
       "description": "Japan's long-running community Go Conference, organized by the local Go community in Tokyo.",
       "startDate": "2026-09-11",
@@ -214,15 +223,20 @@
       "website": "https://gocon.jp/2026/en",
       "links": [
         {
-          "label": "Session archive",
-          "url": "https://sessionize.com/go-conference-2026"
+          "label": "Timetable",
+          "url": "https://gocon.jp/2026/en/timetable/"
+        },
+        {
+          "label": "Videos",
+          "url": "https://www.youtube.com/@GoConference"
         }
       ],
       "locations": [
         {
           "city": "Tokyo",
           "country": "Japan",
-          "region": "Asia"
+          "region": "Asia",
+          "url": "https://www.openstreetmap.org/way/240751512"
         }
       ]
     },
