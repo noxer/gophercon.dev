@@ -580,6 +580,29 @@
           "url": "https://github.com/go-devroom/cfp"
         }
       ]
+    },
+    {
+      "id": "gophercon-au-2027",
+      "title": "GopherCon Australia 2027",
+      "startDate": "2027-11-10",
+      "endDate": "2027-11-12",
+      "type": "conference",
+      "website": "https://gophercon.com.au/",
+      "description": "Australia’s Go conference returns to Sydney for its fourth edition: workshops, keynotes and networking at the NSW Teachers Federation Conference Centre in Surry Hills, run by the Sydney Go Users’ Group — the kangaroo-gopher identity drawn by Renee French.",
+      "locations": [
+        {
+          "city": "Sydney",
+          "country": "Australia",
+          "region": "Oceania",
+          "url": "https://www.openstreetmap.org/node/13980195473"
+        }
+      ],
+      "links": [
+        {
+          "label": "Venue",
+          "url": "https://www.conferencecentre.nswtf.org.au/"
+        }
+      ]
     }
   ]
 }
