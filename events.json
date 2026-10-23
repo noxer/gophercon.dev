@@ -121,7 +121,6 @@
     },
     {
       "id": "gophercon-europe-2027",
-      "unverified": true,
       "title": "GopherCon Europe 2027",
       "description": "Europe's biggest Go gathering celebrates its 10th year in Berlin, running together with HeyAI: backends, cloud and platforms that stay fast and reliable at scale. Early-bird tickets until 1 December 2026.",
       "startDate": "2027-06-14",
@@ -132,6 +131,11 @@
         {
           "label": "Venue",
           "url": "https://besondere-orte.com/de/locations/umweltforum"
+        },
+        {
+          "label": "Early-bird tickets",
+          "url": "https://buy.stripe.com/00waEYaeVeXp7lRdAb7IY0U",
+          "endsAt": "2026-12-01"
         }
       ],
       "locations": [
@@ -321,9 +325,8 @@
     },
     {
       "id": "gophercon-europe-2026",
-      "unverified": true,
       "title": "GopherCon Europe 2026",
-      "description": "Europe's largest Go conference: several days of talks, open hacking and workshops at the Umweltforum Berlin, with ~350 engineers a day from 30+ countries.",
+      "description": "Europe's largest Go conference: several days of talks, open hacking and workshops at the Festsaal Kreuzberg, with ~350 engineers a day from 30+ countries.",
       "startDate": "2026-06-15",
       "endDate": "2026-06-18",
       "type": "conference",
@@ -335,7 +338,7 @@
         },
         {
           "label": "Venue",
-          "url": "https://besondere-orte.com/de/locations/umweltforum"
+          "url": "https://www.festsaal-kreuzberg.de/"
         }
       ],
       "locations": [
@@ -343,7 +346,7 @@
           "city": "Berlin",
           "country": "Germany",
           "region": "Europe",
-          "url": "https://www.openstreetmap.org/node/3776428050"
+          "url": "https://www.openstreetmap.org/way/277805717"
         }
       ]
     },
@@ -509,22 +512,22 @@
     },
     {
       "id": "fosdem-2027",
-      "unverified": true,
       "title": "FOSDEM 2027",
-      "description": "Brussels’ free open-source developer festival with a dedicated Go devroom — Go talks inside a much bigger, multi-language conference. Dates estimated from the traditional first weekend of February.",
-      "startDate": "2027-02-06",
-      "endDate": "2027-02-07",
+      "description": "Brussels’ free open-source developer festival at the ULB Solbosch campus, with a dedicated Go devroom (confirmed in the 2027 room list) — Go talks inside a much bigger, multi-language conference.",
+      "startDate": "2027-01-30",
+      "endDate": "2027-01-31",
       "status": "tentative",
       "scope": "track",
       "locations": [
         {
           "city": "Brussels",
           "country": "Belgium",
-          "region": "Europe"
+          "region": "Europe",
+          "url": "https://www.openstreetmap.org/relation/13699100"
         }
       ],
       "type": "conference",
-      "website": "https://fosdem.org/",
+      "website": "https://fosdem.org/2027/",
       "links": [
         {
           "label": "Go devroom CFP",
