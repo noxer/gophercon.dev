@@ -20,13 +20,13 @@
 :root {
   --bg: #0a1220;
   --bg-hover: #0e1928;
-  --fg: #d5e4ee;
-  --dim: #64809a;
-  --faint: #3a5169;
-  --hair: #1a2c40;
-  --cyan: #00d3f0;
-  --amber: #f0a35e;
-  --red: #f0645e;
+  --fg: #e9f2f9;
+  --dim: #93aec7;
+  --faint: #6c87a3;
+  --hair: #2a4258;
+  --cyan: #22dcf5;
+  --amber: #f5b071;
+  --red: #f57a72;
   --mono: "Go Mono", ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
 }
 
@@ -258,7 +258,7 @@ tr.evt.sel td:first-child { box-shadow: inset 3px 0 0 var(--cyan); }
 .chip .per-open { color: var(--amber); }
 .chip .per-future { color: var(--dim); }
 .chip .per-closed { color: var(--faint); }
-.chip.chip-closed { opacity: 0.55; }
+.chip.chip-closed { opacity: 0.8; }
 
 .col-loc { color: var(--dim); }
 
