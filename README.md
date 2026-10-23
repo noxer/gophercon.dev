@@ -214,37 +214,30 @@ page then shows a hint instead of events.
 
 ## Hosting on GitHub Pages
 
-Pure static files, so Pages serves the repo **as-is from a branch** — no
-build step, no extra workflow (`.nojekyll` opts the deploy out of Jekyll
-processing; the `check-links.yml` workflow is CI only and doesn't deploy):
+Live at **https://gophercon.dev** — apex and `www` both point at GitHub
+Pages, which 301s `www` → apex automatically. Pure static files, deployed
+from a branch: `main` / **(root)** — no build step, no extra workflow
+(`.nojekyll` opts out of Jekyll processing; `check-links.yml` is CI only).
 
-1. Create a **public** repo named `gophercon.dev`, push `main`.
-2. Repo **Settings → Pages → Source: Deploy from a branch** → `main` /
-   **(root)**. Live at `https://noxer.github.io/gophercon.dev/` within a minute.
-3. Custom domain `gophercon.dev` — do DNS **first**, at whoever serves the
-   domain's zone:
-   - `A` records for `@` (the apex): `185.199.108.153`, `185.199.109.153`,
-     `185.199.110.153`, `185.199.111.153`
-     (or a flattened `CNAME`/`ALIAS`/`ANAME` at `@` if the provider supports it,
-     e.g. Cloudflare)
-   - `CNAME` for `www` → `noxer.github.io`
-   Then enter `gophercon.dev` in Settings → Pages and enable *Enforce HTTPS*.
-   GitHub issues certs for apex and www when both are configured — mandatory
-   anyway, since the entire `.dev` TLD is HTTPS-only (HSTS preloaded).
-   A `CNAME` file appears in the repo; commit it so config is reproducible.
-   **Until the DNS points at GitHub, keep the domain unset** — with a custom
-   domain configured, the `.github.io` URL 301-redirects to the domain and
-   nothing resolves.
+The custom domain lives in the repo as a versioned `CNAME` file
+(`gophercon.dev`). DNS — zone at Hetzner DNS (registrar: Key-Systems):
 
-Domain verification (Settings → Pages → verify, DNS `TXT` record) is
-recommended by GitHub to prevent domain-takeover conflicts with other users.
+- `A` records for `@` (apex): `185.199.108.153`, `185.199.109.153`,
+  `185.199.110.153`, `185.199.111.153`
+- **no `AAAA` at the apex** — GitHub Pages' apex IPs are IPv4-only, and a
+  leftover IPv6 record would send those visitors to a dead host
+- `CNAME` for `www` → `noxer.github.io`
 
-What comes free once the repo is public: the **issue forms** (footer →
-*suggest an event* / *report a change*), the **monthly link-check Action**,
-and public data reuse — point fetchers at
-`https://raw.githubusercontent.com/noxer/gophercon.dev/main/events.json`
-(see *Reusing the data*: Pages itself sends no CORS headers, the raw
-endpoints do).
+*Enforce HTTPS* is on in Settings → Pages; GitHub issues certs for apex
+and www. (Mandatory anyway — the entire `.dev` TLD is HTTPS-only, HSTS
+preloaded.)
+
+**Domain history:** `gophercon.dev` served this event list in 2020–2021,
+then spent ~2023–2026 as a courtesy 302-redirect to
+[GopherCon Europe](https://gophercon.eu) at the organizers' request.
+The event list reclaimed the domain in October 2026; GopherCon Europe
+remains in the list as a first-class entry (`gophercon-europe-*`),
+which is arguably a better pointer anyway.
 
 ## History
 
