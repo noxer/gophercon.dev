@@ -66,7 +66,7 @@
       "id": "gophercon-india-2026",
       "unverified": true,
       "title": "GopherCon India 2026",
-      "description": "The community-run Go conference in India — a single-track day of talks covering concurrency, tooling, cloud-native Go and community topics.",
+      "description": "The community-run Go conference in India — a one-day of talks covering concurrency, tooling, cloud-native Go and community topics.",
       "startDate": "2026-11-22",
       "type": "conference",
       "website": "https://gopherconindia.org/",
@@ -75,13 +75,22 @@
           "label": "CFP",
           "url": "https://cfp.gopherconindia.org/",
           "endsAt": "2026-08-23"
+        },
+        {
+          "label": "Tickets",
+          "url": "https://tickets.tixly.in/e/gophercon-india-2026"
+        },
+        {
+          "label": "Venue",
+          "url": "https://novotel.accor.com/gb/hotel-6687-novotel-hyderabad-airport/index.shtml"
         }
       ],
       "locations": [
         {
           "city": "Hyderabad",
           "country": "India",
-          "region": "Asia"
+          "region": "Asia",
+          "url": "https://www.openstreetmap.org/node/5072135241"
         }
       ]
     },
