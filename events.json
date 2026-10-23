@@ -38,7 +38,7 @@
       "id": "golab-2026",
       "unverified": true,
       "title": "GoLab 2026",
-      "description": "Italy's long-running Go conference in Bologna: Go core topics plus web, cloud-native, security, databases and observability tracks.",
+      "description": "Italy's long-running Go conference in Bologna (since 2015): day-one workshops, then two parallel talk tracks covering Go internals, observability, security, databases, WASM and full-stack Go.",
       "startDate": "2026-11-01",
       "endDate": "2026-11-03",
       "type": "conference",
@@ -51,6 +51,10 @@
         {
           "label": "Schedule",
           "url": "https://golab.io/schedule"
+        },
+        {
+          "label": "Venue",
+          "url": "https://www.savoia.eu/en"
         }
       ],
       "locations": [
