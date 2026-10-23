@@ -173,24 +173,20 @@
       "id": "gophercon-china-2026",
       "unverified": true,
       "title": "GopherCon China 2026",
-      "description": "One of the largest Go community events in China, two days of talks in Shanghai.",
+      "description": "Announced for 15–16 October 2026 in Shanghai — the official site has since reverted to a date-TBD placeholder with no venue published; check there before planning around it.",
       "startDate": "2026-10-15",
       "endDate": "2026-10-16",
       "type": "conference",
       "website": "https://gophercon.com.cn/",
-      "links": [
-        {
-          "label": "CFP",
-          "url": "https://gophercon.com.cn/zh/cfp/"
-        }
-      ],
+      "links": [],
       "locations": [
         {
           "city": "Shanghai",
           "country": "China",
           "region": "Asia"
         }
-      ]
+      ],
+      "status": "rescheduled"
     },
     {
       "id": "tinygo-conf-2026",
@@ -260,7 +256,6 @@
     },
     {
       "id": "gophercon-2026",
-      "unverified": true,
       "title": "GopherCon 2026",
       "description": "The flagship North-American Go conference: four days of talks, workshops, community day and the challenge series at the Seattle Convention Center.",
       "startDate": "2026-08-03",
@@ -288,7 +283,6 @@
     },
     {
       "id": "gophercon-uk-2026",
-      "unverified": true,
       "title": "GopherCon UK 2026",
       "description": "The UK's Go conference: a workshop day plus two multi-track conference days at The Brewery in London, with 400+ attendees.",
       "startDate": "2026-08-11",
@@ -370,19 +364,24 @@
     },
     {
       "id": "gophercon-singapore-2026",
-      "unverified": true,
       "title": "GopherCon Singapore 2026",
       "description": "The Asia-Pacific region's Go community conference, three days in Singapore.",
       "startDate": "2026-05-20",
       "endDate": "2026-05-22",
       "type": "conference",
       "website": "https://2026.gophercon.sg/",
-      "links": [],
+      "links": [
+        {
+          "label": "Schedule",
+          "url": "https://2026.gophercon.sg/schedule"
+        }
+      ],
       "locations": [
         {
           "city": "Singapore",
           "country": "Singapore",
-          "region": "Asia"
+          "region": "Asia",
+          "url": "https://www.openstreetmap.org/node/9887509282"
         }
       ]
     },
@@ -424,12 +423,10 @@
           "region": "Europe"
         }
       ],
-      "links": [],
-      "unverified": true
+      "links": []
     },
     {
       "id": "golangconf-2026",
-      "unverified": true,
       "title": "GolangConf 2026",
       "description": "The Go community conference from Moscow, one day of talks on Go development, tools and practice.",
       "startDate": "2026-04-20",
@@ -439,29 +436,28 @@
         {
           "label": "CFP archive",
           "url": "https://cfp.golangconf.ru/en"
+        },
+        {
+          "label": "Venue",
+          "url": "https://golangconf.ru/2026/location"
         }
       ],
       "locations": [
         {
           "city": "Moscow",
           "country": "Russia",
-          "region": "Europe"
+          "region": "Europe",
+          "url": "https://www.openstreetmap.org/relation/14580210"
         }
       ]
     },
     {
       "id": "gophercon-2021",
-      "unverified": true,
       "title": "GopherCon 2021",
-      "description": "The North-American Go conference as a hybrid: in-person in San Diego plus a full online track.",
-      "startDate": "2021-12-05",
-      "endDate": "2021-12-08",
+      "description": "The 8th GopherCon — the planned hybrid San Diego edition (Marriott Marquis Marina, Dec 5–8) was cancelled on 17 Sep 2021 with the rise of the Delta variant; it ran fully online Dec 6–10 as “GoVirCon 2.0”: paid workshops, then free talk streams from Microsoft Learn TV Studios.",
+      "startDate": "2021-12-06",
+      "endDate": "2021-12-10",
       "locations": [
-        {
-          "city": "San Diego",
-          "country": "USA",
-          "region": "North America"
-        },
         {
           "city": "Online",
           "country": "",
@@ -472,24 +468,30 @@
       "website": "https://www.gophercon.com/",
       "links": [
         {
-          "label": "Talk videos",
-          "url": "https://www.youtube.com/@GopherAcademy"
+          "label": "Announcement",
+          "url": "https://blog.gopheracademy.com/gophercon-2021-virtual"
+        },
+        {
+          "label": "Archived site",
+          "url": "https://web.archive.org/web/20211201145420/https://www.gophercon.com/"
+        },
+        {
+          "label": "Talks",
+          "url": "https://www.youtube.com/watch?v=6X-3Q-c0fEA"
         }
       ]
     },
     {
       "id": "gophercon-europe-2020",
-      "unverified": true,
       "title": "GopherCon Europe 2020",
-      "description": "The first GopherCon Europe — remembered as “GopherCon Berlin” from its gophercon.berlin domain. Announced for Festsaal Kreuzberg, moved online 15–18 June 2020 when the pandemic hit; the Berlin line continues as today’s GopherCon Europe.",
+      "description": "GopherCon Europe’s third edition, run by the gophercon.berlin team — announced for 23–26 Apr 2020 at Festsaal Kreuzberg, Berlin, and moved fully online with the pandemic: a workshop day and three days of talks, 15–18 Jun 2020, with attendees from 40+ countries.",
       "startDate": "2020-06-15",
       "endDate": "2020-06-18",
       "locations": [
         {
-          "city": "Berlin",
-          "country": "Germany",
-          "region": "Europe",
-          "url": "https://www.openstreetmap.org/way/277805717"
+          "city": "Online",
+          "country": "",
+          "region": "Online"
         }
       ],
       "type": "conference",
@@ -498,12 +500,15 @@
         {
           "label": "Talk videos",
           "url": "https://www.youtube.com/playlist?list=PLtoVuM73AmsKnUvoFizEmvWo0BbegkSIG"
+        },
+        {
+          "label": "Archived site",
+          "url": "https://web.archive.org/web/20200806110721/https://gophercon.berlin/"
         }
       ]
     },
     {
       "id": "gophercon-2027",
-      "unverified": true,
       "title": "GopherCon 2027",
       "description": "Announced, dates TBC — start is a curator estimate based on recent editions (late Jul/early Aug). Organizers say the Call for Speakers opens 2027-01-18.",
       "startDate": "2027-08-02",
