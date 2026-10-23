@@ -1,10 +1,11 @@
 # gophercon.dev
 
-A small static website that lists Go-related events (conferences and community
-events) around the world, with search, filters, and automatic hiding of events
-that ended more than a week ago.
+A small static website that lists Go-related events (conferences, community
+events and recurring meetups) around the world, with search, filters, and
+automatic hiding of events that ended more than a week ago.
 
-Design: terminal/console aesthetic — dark Go-navy, system monospace, ISO dates
+Design: terminal/console aesthetic — dark Go-navy, Go Mono (self-hosted,
+BSD-3), ISO dates
 with relative day offsets (`+10d`), and keyboard-driven navigation. No build
 step, no webfonts, no dependencies — plain files, served over http.
 
@@ -43,13 +44,14 @@ data), `source`, and `license`.
   "description": "One or two short sentences.",
   "startDate": "2027-05-12",           // YYYY-MM-DD
   "endDate": "2027-05-14",             // optional, defaults to startDate
+  "repeat": { "freq": "monthly" },     // optional: recurring series (meetups) — see below
   "locations": [                       // one entry per location
     { "city": "Exampleville", "country": "Exampleland", "region": "Europe",
       "url": "https://www.openstreetmap.org/way/12345" },      // optional map link
     { "city": "Online", "country": "", "region": "Online" }   // hybrid event
   ],
   // region: Africa | Asia | Europe | North America | South America | Oceania | Online
-  "type": "conference",                // conference | community — the event's
+  "type": "conference",                // conference | community | meetup — the event's
                                        // shape (scheduled, ticketed program vs a
                                        // free/unconf-style local gathering), not
                                        // who runs it: all GopherCons are conferences
@@ -119,6 +121,20 @@ Housekeeping rules:
   make the track explicit ("Go talks inside a bigger conference"). The
   `go:` control defaults to `dedicated`, so track events are out of the
   default view (and out of the shared URL) unless someone asks for them.
+- **Meetups & recurring series**: meetups aren't one-shot dated events —
+  they're series, so instead of a next date that would rot, give the entry
+  `"type": "meetup"` and `"repeat": { "freq": "monthly" }`. The date column
+  reads `monthly`, the relative column an em dash, and a series never
+  auto-hides (there's always a next gathering) or wins the "next up"
+  countdown (the hero stays real-event territory). If the group publishes a
+  fixed pattern, an estimated next date is computed on the fly:
+  `"repeat": { "freq": "monthly", "weekday": 2, "week": 2 }` = 2nd Tuesday
+  (`weekday`: 0=Sun…6=Sat; `week`: ordinal in month, negative counts from
+  the end, `-1` = last). The date column then shows the computed ISO date
+  with a `monthly` tag (hover: computed — confirm before travelling), and
+  the series sorts among dated events by that estimate. `startDate` is the
+  series' founding date — it never renders for undated series, it only
+  floors the computation.
 - **Unverified marker**: `"unverified": true` marks an entry that was drafted
   without a human checking it against a source — every entry created by an AI
   assistant carries it until the curator verifies it. The row renders a tiny

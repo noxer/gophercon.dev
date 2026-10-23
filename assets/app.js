@@ -53,6 +53,64 @@
     return parseDate(ev.endDate || ev.startDate);
   }
 
+  // v11: recurring series (meetups). "repeat": {"freq":"monthly"} is a
+  // self-maintaining entry — the list stores the cadence, not a next date
+  // that would rot. If the series publishes a fixed pattern, add weekday
+  // (0=Sun..6=Sat) and week (ordinal in month; negative counts from the end,
+  // -1 = last) and the next occurrence is computed on the fly, displayed as
+  // a regular ISO date plus a "monthly" tag. Without the pattern the date
+  // column just reads "monthly" — honest, since monthly meetups pick dates
+  // ad hoc. A series never becomes "past" and never wins the hero countdown.
+
+  function isSeries(ev) {
+    return !!ev.repeat;
+  }
+
+  function nthWeekday(y, m, weekday, week) {
+    var first = new Date(y, m, 1);
+    var day;
+    if (week > 0) {
+      day = 1 + ((weekday - first.getDay() + 7) % 7) + (week - 1) * 7;
+    } else {
+      var last = new Date(y, m + 1, 0); // last day of month m
+      day = last.getDate() - ((last.getDay() - weekday + 7) % 7) + (week + 1) * 7;
+    }
+    var d = new Date(y, m, day);
+    if (d.getMonth() !== m) return null; // e.g. no 5th Monday in this month
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
+  // Computed next occurrence (>= today and >= series startDate), or null
+  // when the series has no fixed pattern to compute from.
+  function seriesNext(ev, today) {
+    var r = ev.repeat;
+    if (!r || r.freq !== "monthly" ||
+        typeof r.weekday !== "number" || !r.week) return null;
+    var floor = today;
+    if (ev.startDate) floor = new Date(Math.max(+today, +parseDate(ev.startDate)));
+    var y = floor.getFullYear(), m = floor.getMonth();
+    for (var i = 0; i < 26; i++) {
+      var occ = nthWeekday(y, m, r.weekday, r.week);
+      if (occ && occ >= floor) return occ;
+      m += 1;
+      if (m > 11) { m = 0; y += 1; }
+    }
+    return null;
+  }
+
+  // Sort/display start: computed date for pattern series, real date otherwise,
+  // null for undated series ("monthly").
+  function effStart(ev, today) {
+    return isSeries(ev) ? seriesNext(ev, today) : parseDate(ev.startDate);
+  }
+
+  // A series never becomes "past": there is always a next gathering.
+  function isPastEvent(ev, today) {
+    if (isSeries(ev)) return false;
+    return endDateOf(ev) < today;
+  }
+
   // ISO-ish ranges: "2026-11-01/03", "2026-06-15/18", "2026-10-31/11-02", "2027-02-13"
   function fmtIsoRange(start, end) {
     if (+end === +start) return iso(start);
@@ -133,7 +191,7 @@
   // rescheduledFrom = the old start date, kept for information once the
   // new dates are in the entry. Neither cancelled nor TBD counts as next up.
   function isCountdownEligible(ev) {
-    return !isCancelled(ev) && ev.status !== "rescheduled";
+    return !isSeries(ev) && !isCancelled(ev) && ev.status !== "rescheduled";
   }
 
   // v5: announced but dates not confirmed — the entry's dates are a curator
@@ -193,6 +251,7 @@
   // event still waiting on its new date ("rescheduled") never auto-hides:
   // attendees are waiting for the update, not the archive.
   function isHiddenByDefault(ev, today) {
+    if (isSeries(ev)) return false; // a monthly meetup is never "over"
     if (ev.status === "rescheduled") return false;
     return endDateOf(ev) < new Date(today.getTime() - 7 * DAY);
   }
@@ -277,16 +336,26 @@
   }
 
   function renderRow(ev, today) {
-    var start = parseDate(ev.startDate);
-    var end = endDateOf(ev);
-    var isPast = end < today;
+    var start = effStart(ev, today); // null => undated series
+    var end = isSeries(ev) ? start : endDateOf(ev);
+    var isPast = isPastEvent(ev, today);
 
     var tr = el("tr", "evt" + (isPast ? " past" : "") +
       (isCancelled(ev) ? " cancelled" : "") + (isTentative(ev) ? " tentative" : ""));
 
     var d = el("td", "col-date");
-    d.appendChild(el("span", "iso",
-      (isTentative(ev) ? "\u2248 " : "") + fmtIsoRange(start, end)));
+    if (!start) {
+      d.appendChild(el("span", "iso iso-series", ev.repeat.freq || "monthly"));
+    } else {
+      var isoEl = el("span", "iso",
+        (isTentative(ev) ? "\u2248 " : "") + fmtIsoRange(start, end));
+      if (isSeries(ev))
+        isoEl.title = "next gathering computed from the published " +
+          ev.repeat.freq + " pattern \u2014 confirm before travelling";
+      d.appendChild(isoEl);
+      if (isSeries(ev))
+        d.appendChild(el("span", "status-tag series", ev.repeat.freq));
+    }
     tr.appendChild(d);
 
     var cell = el("td", "col-event");
@@ -344,7 +413,9 @@
     tr.appendChild(loc);
 
     var when = el("td", "col-when");
-    if (isTentative(ev)) {
+    if (isSeries(ev) && !start) {
+      when.appendChild(el("span", "rel rel-series", "\u2014"));
+    } else if (isTentative(ev)) {
       when.appendChild(el("span", "rel rel-tbc", "tbc"));
     } else {
       var rel = relCompact(start, end, today);
@@ -411,12 +482,19 @@
     });
 
     var upcoming = visible.filter(function (ev) {
-      return endDateOf(ev) >= today;
+      return !isPastEvent(ev, today);
     }).sort(function (a, b) {
-      return parseDate(a.startDate) - parseDate(b.startDate);
+      // undated series ("monthly") sit at the bottom of the upcoming block;
+      // pattern series sort by their computed next date among real events
+      var ua = isSeries(a) && !seriesNext(a, today) ? 1 : 0;
+      var ub = isSeries(b) && !seriesNext(b, today) ? 1 : 0;
+      if (ua !== ub) return ua - ub;
+      var ea = effStart(a, today), eb = effStart(b, today);
+      if (!ea || !eb) return 0;
+      return ea - eb;
     });
     var past = visible.filter(function (ev) {
-      return endDateOf(ev) < today;
+      return isPastEvent(ev, today);
     }).sort(function (a, b) {
       return parseDate(b.startDate) - parseDate(a.startDate);
     });
@@ -425,7 +503,7 @@
     els.listPast.textContent = "";
     renderedRows = [];
     upcoming.concat(past).forEach(function (ev) {
-      var target = endDateOf(ev) >= today ? els.listUpcoming : els.listPast;
+      var target = isPastEvent(ev, today) ? els.listPast : els.listUpcoming;
       target.appendChild(renderRow(ev, today));
     });
     renderedRows = Array.prototype.slice.call(

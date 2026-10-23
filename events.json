@@ -1,5 +1,5 @@
 {
-  "version": 10,
+  "version": 11,
   "updated": "2026-10-23",
   "source": "https://go.dev/wiki/Conferences",
   "license": "CC0-1.0",
@@ -512,6 +512,115 @@
           "url": "https://github.com/go-devroom/cfp"
         }
       ]
+    },
+    {
+      "id": "london-gophers",
+      "unverified": true,
+      "title": "London Gophers",
+      "description": "London's Go meetup (Go London User Group): monthly talks and networking, free, all levels welcome.",
+      "startDate": "2015-02-03",
+      "repeat": {
+        "freq": "monthly"
+      },
+      "locations": [
+        {
+          "city": "London",
+          "country": "UK",
+          "region": "Europe"
+        }
+      ],
+      "type": "meetup",
+      "website": "https://gophers.london/",
+      "links": [
+        {
+          "label": "Meetup.com",
+          "url": "https://www.meetup.com/londongophers/"
+        },
+        {
+          "label": "Past talks",
+          "url": "https://www.youtube.com/c/LondonGophers"
+        }
+      ]
+    },
+    {
+      "id": "gdg-berlin-golang",
+      "unverified": true,
+      "title": "GDG Berlin Golang",
+      "description": "Go meetup run with GDG Berlin: monthly evening sessions at CIC Berlin, plus hackathon editions.",
+      "startDate": "2016-01-01",
+      "repeat": {
+        "freq": "monthly"
+      },
+      "locations": [
+        {
+          "city": "Berlin",
+          "country": "Germany",
+          "region": "Europe"
+        }
+      ],
+      "type": "meetup",
+      "website": "https://www.meetup.com/golang-users-berlin/",
+      "links": []
+    },
+    {
+      "id": "golangnyc",
+      "unverified": true,
+      "title": "GolangNYC",
+      "description": "New York City's Go meetup: monthly evening talks and socials, free for the community.",
+      "startDate": "2013-06-01",
+      "repeat": {
+        "freq": "monthly"
+      },
+      "locations": [
+        {
+          "city": "New York",
+          "country": "USA",
+          "region": "North America"
+        }
+      ],
+      "type": "meetup",
+      "website": "https://www.meetup.com/golanguagenewyork/",
+      "links": []
+    },
+    {
+      "id": "gophers-sg",
+      "unverified": true,
+      "title": "GoSG — Singapore Gophers",
+      "description": "Singapore's Go meetup group (~2,300 members); the organisers behind GopherCon Singapore.",
+      "startDate": "2014-11-01",
+      "repeat": {
+        "freq": "monthly"
+      },
+      "locations": [
+        {
+          "city": "Singapore",
+          "country": "Singapore",
+          "region": "Asia"
+        }
+      ],
+      "type": "meetup",
+      "website": "https://www.meetup.com/golangsg/",
+      "links": []
+    },
+    {
+      "id": "golang-taipei",
+      "unverified": true,
+      "title": "Golang Taipei",
+      "description": "Taipei's Go meetup, ~9,500 members: regular evening sessions in the city.",
+      "startDate": "2015-07-01",
+      "repeat": {
+        "freq": "monthly"
+      },
+      "locations": [
+        {
+          "city": "Taipei",
+          "country": "Taiwan",
+          "region": "Asia"
+        }
+      ],
+      "type": "meetup",
+      "website": "https://www.meetup.com/golang-taipei-meetup/",
+      "links": []
     }
   ]
 }

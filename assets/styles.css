@@ -302,6 +302,13 @@ tr.cancelled .arw { color: var(--faint); }
 .rel-tbc { color: var(--amber); }
 tr.tentative .iso { color: var(--dim); }
 
+/* recurring meetups: undated series read "monthly" in the date column;
+   pattern series show the computed next date + a monthly tag, and the
+   rel column of an undated series is an em dash */
+.iso-series { color: var(--dim); }
+.status-tag.series { color: var(--dim); margin-left: 0.5rem; }
+.rel-series { color: var(--faint); }
+
 .col-when { text-align: right; }
 
 .separator td {
