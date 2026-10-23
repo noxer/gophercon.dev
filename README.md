@@ -15,6 +15,7 @@ step, no webfonts, no dependencies — plain files, served over http.
 | `index.html`        | Page markup                                         |
 | `events.json`       | **The event data** — edit this to add/update events |
 | `assets/styles.css` | Terminal styling (dark Go-navy, monospace)          |
+| `assets/fonts/`     | Self-hosted Go Mono webfonts (woff2, 2 faces; BSD-3, see `assets/fonts/LICENSE`) |
 | `assets/app.js`     | Fetches `events.json`, renders, filters, keyboard nav |
 | `scripts/check-links.mjs` | URL validator for every link in `events.json` |
 | `.github/`          | Issue forms (suggestions/changes) + monthly link-check CI |

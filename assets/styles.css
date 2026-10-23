@@ -1,5 +1,21 @@
 /* gophercon.dev — terminal/console aesthetic: dark Go-navy, monospace,
-   fixed columns, relative day offsets. System mono stack, no webfonts. */
+   fixed columns, relative day offsets. Self-hosted Go Mono (Bigelow &
+   Holmes, BSD-3 — see assets/fonts/LICENSE), system mono as fallback. */
+
+@font-face {
+  font-family: "Go Mono";
+  src: url("fonts/go-mono-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Go Mono";
+  src: url("fonts/go-mono-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   --bg: #0a1220;
@@ -11,7 +27,7 @@
   --cyan: #00d3f0;
   --amber: #f0a35e;
   --red: #f0645e;
-  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  --mono: "Go Mono", ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
 }
 
 * { box-sizing: border-box; }
