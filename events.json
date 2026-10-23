@@ -36,7 +36,6 @@
   "events": [
     {
       "id": "golab-2026",
-      "unverified": true,
       "title": "GoLab 2026",
       "description": "Italy's long-running Go conference in Bologna (since 2015): day-one workshops, then two parallel talk tracks covering Go internals, observability, security, databases, WASM and full-stack Go.",
       "startDate": "2026-11-01",
