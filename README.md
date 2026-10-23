@@ -231,18 +231,3 @@ The custom domain lives in the repo as a versioned `CNAME` file
 *Enforce HTTPS* is on in Settings → Pages; GitHub issues certs for apex
 and www. (Mandatory anyway — the entire `.dev` TLD is HTTPS-only, HSTS
 preloaded.)
-
-**Domain history:** `gophercon.dev` served this event list in 2020–2021,
-then spent ~2023–2026 as a courtesy 302-redirect to
-[GopherCon Europe](https://gophercon.eu) at the organizers' request.
-The event list reclaimed the domain in October 2026; GopherCon Europe
-remains in the list as a first-class entry (`gophercon-europe-*`),
-which is arguably a better pointer anyway.
-
-## History
-
-This repo continues the original gophercon.dev — a community-curated
-conference list that ran in 2020–2021 from a single `conferences.json`
-(its full curation and PR history is preserved in this repo's git log;
-`git show 9b7fe2e:conferences.json`). The old editions are all long past,
-so nothing was carried over — the new `events.json` supersedes it.
