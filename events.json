@@ -476,7 +476,6 @@
     },
     {
       "id": "devfest-berlin-2026",
-      "unverified": true,
       "title": "DevFest Berlin 2026",
       "description": "GDG Berlin’s community-run developer festival — multi-topic (Android, Web, Cloud, AI) with a dedicated “Go & Backend” track organized together with GDG Berlin Golang.",
       "startDate": "2026-11-14",
@@ -494,8 +493,17 @@
       "website": "https://2026.devfest-berlin.de/",
       "links": [
         {
+          "label": "CFP",
+          "url": "https://sessionize.com/devfest-berlin-2026",
+          "endsAt": "2026-11-01"
+        },
+        {
           "label": "GDG Berlin Golang",
           "url": "https://gdg.community.dev/gdg-berlin-golang/"
+        },
+        {
+          "label": "Venue",
+          "url": "https://www.srh-university.de/"
         }
       ]
     },
