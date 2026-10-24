@@ -8,7 +8,8 @@ Design: terminal/console aesthetic — dark Go-navy, Go Mono (self-hosted,
 BSD-3), ISO dates
 with relative day offsets (`+10d`), and keyboard-driven navigation. No build
 step, no third-party fonts or scripts, no dependencies — plain files, served
-over http.
+over http. The only dependency lives in the test suite (jsdom), which runs in
+CI and via `npm test`.
 
 ## Files
 
@@ -21,7 +22,9 @@ over http.
 | `assets/app.js`     | Fetches `events.json`, renders, filters, keyboard nav |
 | `scripts/validate.mjs` | Offline data check for `events.json` (fields, dates, ids, enums, https) |
 | `scripts/check-links.mjs` | URL validator for every link in `events.json` |
-| `.github/`          | Issue forms (suggestions/changes) + validate and link-check CI |
+| `tests/site.test.js`  | Full-page smoke suite (jsdom): render, filters, keyboard nav, URL state — `npm test` |
+| `package.json` / `package-lock.json` | Dev/test tooling only (jsdom); the site itself still ships zero dependencies |
+| `.github/`          | Issue forms (suggestions/changes) + validate, link-check and test CI |
 | `previews/`         | Static design mockups from the exploration phase — published with the site (Pages serves the whole repo); delete the folder to unpublish them |
 
 The site fetches `events.json` at runtime, so browsers block it when the page
@@ -257,7 +260,7 @@ page then shows a hint instead of events.
 Live at **https://gophercon.dev** — apex and `www` both point at GitHub
 Pages, which 301s `www` → apex automatically. Pure static files, deployed
 from a branch: `main` / **(root)** — no build step, no extra workflow
-(`.nojekyll` opts out of Jekyll processing; `validate.yml` and `check-links.yml` are CI only).
+(`.nojekyll` opts out of Jekyll processing; `validate.yml`, `check-links.yml` and `tests.yml` are CI only).
 
 The custom domain lives in the repo as a versioned `CNAME` file
 (`gophercon.dev`). DNS — zone at Hetzner DNS (registrar: Key-Systems):
