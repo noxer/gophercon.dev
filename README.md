@@ -7,7 +7,8 @@ that ended more than a week ago.
 Design: terminal/console aesthetic — dark Go-navy, Go Mono (self-hosted,
 BSD-3), ISO dates
 with relative day offsets (`+10d`), and keyboard-driven navigation. No build
-step, no webfonts, no dependencies — plain files, served over http.
+step, no third-party fonts or scripts, no dependencies — plain files, served
+over http.
 
 ## Files
 
@@ -18,9 +19,10 @@ step, no webfonts, no dependencies — plain files, served over http.
 | `assets/styles.css` | Terminal styling (dark Go-navy, monospace)          |
 | `assets/fonts/`     | Self-hosted Go Mono webfonts (woff2, 2 faces; BSD-3, see `assets/fonts/LICENSE`) |
 | `assets/app.js`     | Fetches `events.json`, renders, filters, keyboard nav |
+| `scripts/validate.mjs` | Offline data check for `events.json` (fields, dates, ids, enums, https) |
 | `scripts/check-links.mjs` | URL validator for every link in `events.json` |
-| `.github/`          | Issue forms (suggestions/changes) + monthly link-check CI |
-| `previews/`         | Static design mockups from the exploration phase — delete before deploying if you like |
+| `.github/`          | Issue forms (suggestions/changes) + validate and link-check CI |
+| `previews/`         | Static design mockups from the exploration phase — published with the site (Pages serves the whole repo); delete the folder to unpublish them |
 
 The site fetches `events.json` at runtime, so browsers block it when the page
 is opened via `file://`. For local development, serve the folder:
@@ -145,16 +147,20 @@ Housekeeping rules:
   line from the entry in `events.json` — verified rows lose the marker and
   nothing else changes. `grep -c '"unverified"' events.json` tracks how much
   review is left; entries nobody has eyeballed keep the flag.
-- **New regions/types need no code** — filter dropdowns are generated from
-  whatever values appear in the file.
+- **New regions/types need no app code** — filter dropdowns are generated
+  from whatever values appear in the file. Add the new value to the lists at
+  the top of `scripts/validate.mjs` (and to the `schema` object) so CI
+  accepts it.
 - Old editions hide themselves: entries that ended over a week ago drop out
   of the default view automatically and stay available via the past toggle.
 - **v1 compatibility**: old data using a single `location` object or a
   top-level `cfpDeadline` still renders (the fields are normalized at load).
-- Validate after editing: `python3 -m json.tool events.json` for syntax, and
-  `node scripts/check-links.mjs` to verify every event website, extra link
+- Validate after editing: `node scripts/validate.mjs` checks syntax, required
+  fields, dates, unique ids, known enum values and https-only URLs (offline,
+  instant), and `node scripts/check-links.mjs` to verify every event website, extra link
   and location map URL still resolves (reports HTTP/TLS/DNS failures and
-  bot-wall warnings). Run it in CI too — domains go stale.
+  bot-wall warnings). Both run in CI on every push and pull request touching
+  `events.json`; the link check also runs monthly — domains go stale.
 
 The data is seeded from the [official Go conference list](https://go.dev/wiki/Conferences)
 plus event websites. Keep it roughly in sync as editions are announced —
@@ -180,11 +186,12 @@ Triage loop (roughly weekly, or when notified):
 1. Read the issue; confirm the details from the linked source.
 2. Add or edit the `events.json` entry (unknown dates → `tentative`,
    per the housekeeping rules above).
-3. Run `node scripts/check-links.mjs`, commit, close the issue with a
+3. Run `node scripts/validate.mjs` and `node scripts/check-links.mjs`, commit, close the issue with a
    comment naming the entry `id` ("added as `fosdem-2027`").
 
 GitHub's login requirement keeps most spam out, and the monthly
-`check-links.yml` Action (plus a run on every `events.json` push) catches
+`check-links.yml` Action (plus a run on every `events.json` push and pull
+request) catches
 link rot filed *by* the community as report-a-change issues.
 
 ## Reusing the data
@@ -240,7 +247,7 @@ page then shows a hint instead of events.
 Live at **https://gophercon.dev** — apex and `www` both point at GitHub
 Pages, which 301s `www` → apex automatically. Pure static files, deployed
 from a branch: `main` / **(root)** — no build step, no extra workflow
-(`.nojekyll` opts out of Jekyll processing; `check-links.yml` is CI only).
+(`.nojekyll` opts out of Jekyll processing; `validate.yml` and `check-links.yml` are CI only).
 
 The custom domain lives in the repo as a versioned `CNAME` file
 (`gophercon.dev`). DNS — zone at Hetzner DNS (registrar: Key-Systems):
