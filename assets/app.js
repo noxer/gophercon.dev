@@ -105,9 +105,11 @@
     return isSeries(ev) ? seriesNext(ev, today) : parseDate(ev.startDate);
   }
 
-  // A series never becomes "past": there is always a next gathering.
+  // A series never becomes "past": there is always a next gathering. Nor
+  // does an event waiting on its new date ("rescheduled") — its listed dates
+  // are the old ones, and it belongs with the upcoming events.
   function isPastEvent(ev, today) {
-    if (isSeries(ev)) return false;
+    if (isSeries(ev) || ev.status === "rescheduled") return false;
     return endDateOf(ev) < today;
   }
 
@@ -167,8 +169,9 @@
   }
 
   // v1 used a top-level cfpDeadline; v2 puts startsAt/endsAt on the link.
+  // Copies each link so the fallback below never writes into the loaded data.
   function linksOf(ev) {
-    var links = (ev.links || []).map(function (l) { return l; });
+    var links = (ev.links || []).map(function (l) { return Object.assign({}, l); });
     if (ev.cfpDeadline) {
       var cfp = links.filter(function (l) { return /cfp/i.test(l.label); })[0];
       if (cfp) {
@@ -415,6 +418,8 @@
     var when = el("td", "col-when");
     if (isSeries(ev) && !start) {
       when.appendChild(el("span", "rel rel-series", "\u2014"));
+    } else if (ev.status === "rescheduled") {
+      when.appendChild(el("span", "rel rel-tbc", "tbd"));
     } else if (isTentative(ev)) {
       when.appendChild(el("span", "rel rel-tbc", "tbc"));
     } else {
@@ -501,10 +506,11 @@
 
     els.listUpcoming.textContent = "";
     els.listPast.textContent = "";
-    renderedRows = [];
-    upcoming.concat(past).forEach(function (ev) {
-      var target = isPastEvent(ev, today) ? els.listPast : els.listUpcoming;
-      target.appendChild(renderRow(ev, today));
+    upcoming.forEach(function (ev) {
+      els.listUpcoming.appendChild(renderRow(ev, today));
+    });
+    past.forEach(function (ev) {
+      els.listPast.appendChild(renderRow(ev, today));
     });
     renderedRows = Array.prototype.slice.call(
       document.querySelectorAll(".evt")
@@ -621,13 +627,18 @@
       return;
     }
     if (e.metaKey || e.ctrlKey || e.altKey) return;
+    // a focused button or link handles Enter itself — don't also open a row link
+    var onControl = /^(BUTTON|A)$/.test(document.activeElement.tagName);
     if (e.key === "/") {
       els.search.focus();
       els.search.select();
       e.preventDefault();
     } else if (e.key === "p" || e.key === "P") {
+      // same path as clicking the checkbox: reset selection, push history
       els.showPast.checked = !els.showPast.checked;
       state.showPast = els.showPast.checked;
+      selIndex = -1;
+      syncURL(true);
       render();
     } else if (e.key === "j") {
       moveSel(1);
@@ -639,7 +650,7 @@
       if (selIndex !== -1) { moveLink(-1); e.preventDefault(); }
     } else if (e.key >= "1" && e.key <= "9") {
       if (selIndex !== -1) selectLink(parseInt(e.key, 10) - 1);
-    } else if (e.key === "Enter") {
+    } else if (e.key === "Enter" && !onControl) {
       openSelected();
     }
   });
@@ -745,7 +756,9 @@
 
   if (typeof fetch === "function") {
     var fetched = false;
-    fetch(EVENTS_URL, { cache: "no-store" })
+    // no-cache revalidates (ETag) on every load: edits show up immediately,
+    // but an unchanged file isn't downloaded again
+    fetch(EVENTS_URL, { cache: "no-cache" })
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
