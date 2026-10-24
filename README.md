@@ -222,6 +222,14 @@ itself doesn't send CORS headers, the raw endpoints do.
 - **Sort order:** upcoming events first (next soonest first), past events
   below (most recently ended first). The hero countdown always shows the
   soonest upcoming event.
+- **Accessibility:** j/k and the link keys move real focus to the selected
+  link (each link is described by its event's name), and Tab keeps the
+  selection in sync. Result counts are announced through one polite status
+  line once typing pauses, not per keystroke. Animations stop under
+  `prefers-reduced-motion`. Check changes with axe-core
+  (`axe.run()` in the browser console, via the axe DevTools extension, or
+  Lighthouse's accessibility audit) — the page currently reports 0 WCAG 2.2
+  AA violations.
 
 ## Keyboard shortcuts
 

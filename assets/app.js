@@ -21,6 +21,7 @@
     showPastLabel: document.getElementById("show-past-label"),
     clearFilters: document.getElementById("clear-filters"),
     meta: document.getElementById("meta"),
+    srStatus: document.getElementById("sr-status"),
     listUpcoming: document.getElementById("list-upcoming"),
     pastSeparator: document.getElementById("past-separator"),
     listPast: document.getElementById("list-past"),
@@ -325,12 +326,20 @@
     return node;
   }
 
-  function chip(label, url, period) {
+  // describedBy: id of the event name, so a focused chip announces which
+  // event it belongs to ("website, link, GoLab 2026")
+  function chip(label, url, period, describedBy) {
     var a = el("a", "chip");
     a.href = url;
     a.target = "_blank";
     a.rel = "noopener noreferrer";
-    a.appendChild(el("span", "lbl", "\u2197 " + String(label).toLowerCase()));
+    if (describedBy) a.setAttribute("aria-describedby", describedBy);
+    var lbl = el("span", "lbl");
+    var arrow = el("span", null, "\u2197 ");
+    arrow.setAttribute("aria-hidden", "true");
+    lbl.appendChild(arrow);
+    lbl.appendChild(document.createTextNode(String(label).toLowerCase()));
+    a.appendChild(lbl);
     if (period) {
       a.appendChild(el("span", "per " + period.cls, " \u00B7 " + period.text));
       if (period.cls === "per-closed") a.classList.add("chip-closed");
@@ -364,7 +373,10 @@
     var cell = el("td", "col-event");
     var line = el("div", "line");
     line.appendChild(el("span", "arw", "\u203A"));
-    line.appendChild(el("span", "name", ev.title));
+    var nameId = "ev-" + ev.id;
+    var name = el("span", "name", ev.title);
+    name.id = nameId;
+    line.appendChild(name);
     var tag = statusTag(ev);
     if (tag) line.appendChild(el("span", "status-tag " + tag.cls, tag.text));
     if (ev.scope === "track")
@@ -382,9 +394,9 @@
     cell.appendChild(note);
 
     var chips = el("div", "chips");
-    chips.appendChild(chip("website", ev.website, null));
+    chips.appendChild(chip("website", ev.website, null, nameId));
     linksOf(ev).forEach(function (link) {
-      chips.appendChild(chip(link.label, link.url, periodOf(link, today)));
+      chips.appendChild(chip(link.label, link.url, periodOf(link, today), nameId));
     });
     cell.appendChild(chips);
     tr.appendChild(cell);
@@ -526,7 +538,9 @@
     renderHero(upcoming.filter(isCountdownEligible)[0], today);
 
     els.counts.textContent = "";
-    els.counts.appendChild(el("span", "pulse", "\u25CF "));
+    var pulse = el("span", "pulse", "\u25CF ");
+    pulse.setAttribute("aria-hidden", "true"); // decorative
+    els.counts.appendChild(pulse);
     var cancelledShown = visible.filter(isCancelled).length;
     var reschedShown = visible.filter(function (ev) {
       return ev.status === "rescheduled";
@@ -538,6 +552,11 @@
       (cancelledShown > 0 ? " \u00B7 " + cancelledShown + " cancelled" : "") +
       (reschedShown > 0 ? " \u00B7 " + reschedShown + " rescheduled" : "") +
       (tbcShown > 0 ? " \u00B7 " + tbcShown + " tbc" : "")));
+
+    announce(visible.length === 0
+      ? "0 matches"
+      : visible.length + (visible.length === 1 ? " event" : " events") + " shown" +
+        (hiddenCount > 0 ? ", " + hiddenCount + " past hidden" : ""));
 
     els.meta.textContent = hiddenCount > 0
       ? hiddenCount + " past " + (hiddenCount === 1 ? "event" : "events") +
@@ -554,7 +573,29 @@
     syncURL(false);
   }
 
+  // One polite status line for screen readers, sent once input settles —
+  // re-rendering on every keystroke must not mean announcing on every one.
+  var announceTimer = null;
+  var lastAnnounced = null;
+  function announce(text) {
+    if (lastAnnounced === null) { lastAnnounced = text; return; } // initial load
+    clearTimeout(announceTimer);
+    announceTimer = setTimeout(function () {
+      if (text === lastAnnounced) return;
+      lastAnnounced = text;
+      els.srStatus.textContent = text;
+    }, 600);
+  }
+
   // ---------- keyboard navigation (j/k selection) ----------
+
+  // Selection follows real focus: the selected link is focused, so screen
+  // readers announce it and Tab/Shift-Tab carry on from there.
+  function focusSelected() {
+    var chips = selectedChips();
+    if (chips.length === 0) return;
+    chips[Math.min(linkIndex, chips.length - 1)].focus({ preventScroll: true });
+  }
 
   function markSelected() {
     renderedRows.forEach(function (row, i) {
@@ -578,6 +619,7 @@
     if (chips.length === 0) return;
     linkIndex = Math.max(0, Math.min(chips.length - 1, linkIndex + delta));
     markSelected();
+    focusSelected();
   }
 
   function selectLink(n) {
@@ -585,6 +627,7 @@
     if (n < chips.length) {
       linkIndex = n;
       markSelected();
+      focusSelected();
     }
   }
 
@@ -593,9 +636,23 @@
     selIndex = Math.max(0, Math.min(renderedRows.length - 1, selIndex + delta));
     linkIndex = 0;
     markSelected();
+    focusSelected();
     var row = renderedRows[selIndex];
     if (row.scrollIntoView) row.scrollIntoView({ block: "nearest" });
   }
+
+  // Tabbing onto a link selects its row (and link), so the j/k state and
+  // the visual highlight never disagree with where focus actually is.
+  document.addEventListener("focusin", function (e) {
+    var t = e.target;
+    if (!t.classList || !t.classList.contains("chip")) return;
+    var row = t.closest(".evt");
+    var i = renderedRows.indexOf(row);
+    if (i === -1) return;
+    selIndex = i;
+    linkIndex = Array.prototype.indexOf.call(row.querySelectorAll(".chip"), t);
+    markSelected();
+  });
 
   function openSelected() {
     var chips = selectedChips();

@@ -12,11 +12,12 @@
 <body>
   <div class="wrap">
     <header class="top">
-      <span class="brand"><b>gophercon<span class="tld">.dev</span></b> — go events, worldwide</span>
+      <h1 class="brand"><b>gophercon<span class="tld">.dev</span></b> — go events, worldwide</h1>
       <span id="counts" class="counts"></span>
     </header>
 
-    <section class="hero" aria-live="polite">
+    <main>
+    <section class="hero">
       <div id="cmd" class="cmd" aria-hidden="true"></div>
       <p id="hero-next" class="next"></p>
       <p id="hero-meta" class="hero-meta"></p>
@@ -52,7 +53,8 @@
       <button id="clear-filters" class="ctl ctl-btn" type="button" hidden>reset</button>
     </section>
 
-    <p id="meta" class="meta" role="status"></p>
+    <p id="meta" class="meta"></p>
+    <p id="sr-status" class="sr-only" role="status"></p>
 
     <table class="events">
       <thead>
@@ -78,6 +80,7 @@
       0 matches — try a different query or
       <button id="reset-empty" class="ctl-btn-inline" type="button">reset filters</button>
     </p>
+    </main>
 
     <footer class="site-footer">
       <p class="keys">
