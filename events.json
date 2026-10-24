@@ -9,6 +9,7 @@
     "description": "one or two short sentences",
     "startDate": "YYYY-MM-DD (first day)",
     "endDate": "YYYY-MM-DD (last day, optional, defaults to startDate)",
+    "repeat": "optional: recurring series (meetups) — {\"freq\": \"monthly\"}, plus optional weekday (0=Sun..6=Sat) and week (ordinal in month, negative counts from the end, -1 = last) to compute the next date; startDate is then the series' founding date",
     "locations": [
       {
         "city": "one entry per location; multiple entries = multi-city or hybrid (use region \"Online\" for the virtual part)",
@@ -17,7 +18,7 @@
         "url": "optional — map link for THIS location, preferably OpenStreetMap (renders with ⌖ in the location column); venue pages belong in links[] as a \"Venue\" link"
       }
     ],
-    "type": "conference | community | workshop | meetup | online",
+    "type": "conference | community | meetup — the event's shape (ticketed program vs free/unconf-style gathering vs recurring meetup), not who runs it",
     "website": "the one main link to the event website",
     "links": [
       {

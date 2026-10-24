@@ -21,6 +21,7 @@
     showPastLabel: document.getElementById("show-past-label"),
     clearFilters: document.getElementById("clear-filters"),
     meta: document.getElementById("meta"),
+    srStatus: document.getElementById("sr-status"),
     listUpcoming: document.getElementById("list-upcoming"),
     pastSeparator: document.getElementById("past-separator"),
     listPast: document.getElementById("list-past"),
@@ -105,9 +106,11 @@
     return isSeries(ev) ? seriesNext(ev, today) : parseDate(ev.startDate);
   }
 
-  // A series never becomes "past": there is always a next gathering.
+  // A series never becomes "past": there is always a next gathering. Nor
+  // does an event waiting on its new date ("rescheduled") — its listed dates
+  // are the old ones, and it belongs with the upcoming events.
   function isPastEvent(ev, today) {
-    if (isSeries(ev)) return false;
+    if (isSeries(ev) || ev.status === "rescheduled") return false;
     return endDateOf(ev) < today;
   }
 
@@ -167,8 +170,9 @@
   }
 
   // v1 used a top-level cfpDeadline; v2 puts startsAt/endsAt on the link.
+  // Copies each link so the fallback below never writes into the loaded data.
   function linksOf(ev) {
-    var links = (ev.links || []).map(function (l) { return l; });
+    var links = (ev.links || []).map(function (l) { return Object.assign({}, l); });
     if (ev.cfpDeadline) {
       var cfp = links.filter(function (l) { return /cfp/i.test(l.label); })[0];
       if (cfp) {
@@ -322,12 +326,20 @@
     return node;
   }
 
-  function chip(label, url, period) {
+  // describedBy: id of the event name, so a focused chip announces which
+  // event it belongs to ("website, link, GoLab 2026")
+  function chip(label, url, period, describedBy) {
     var a = el("a", "chip");
     a.href = url;
     a.target = "_blank";
     a.rel = "noopener noreferrer";
-    a.appendChild(el("span", "lbl", "\u2197 " + String(label).toLowerCase()));
+    if (describedBy) a.setAttribute("aria-describedby", describedBy);
+    var lbl = el("span", "lbl");
+    var arrow = el("span", null, "\u2197 ");
+    arrow.setAttribute("aria-hidden", "true");
+    lbl.appendChild(arrow);
+    lbl.appendChild(document.createTextNode(String(label).toLowerCase()));
+    a.appendChild(lbl);
     if (period) {
       a.appendChild(el("span", "per " + period.cls, " \u00B7 " + period.text));
       if (period.cls === "per-closed") a.classList.add("chip-closed");
@@ -361,7 +373,10 @@
     var cell = el("td", "col-event");
     var line = el("div", "line");
     line.appendChild(el("span", "arw", "\u203A"));
-    line.appendChild(el("span", "name", ev.title));
+    var nameId = "ev-" + ev.id;
+    var name = el("span", "name", ev.title);
+    name.id = nameId;
+    line.appendChild(name);
     var tag = statusTag(ev);
     if (tag) line.appendChild(el("span", "status-tag " + tag.cls, tag.text));
     if (ev.scope === "track")
@@ -379,9 +394,9 @@
     cell.appendChild(note);
 
     var chips = el("div", "chips");
-    chips.appendChild(chip("website", ev.website, null));
+    chips.appendChild(chip("website", ev.website, null, nameId));
     linksOf(ev).forEach(function (link) {
-      chips.appendChild(chip(link.label, link.url, periodOf(link, today)));
+      chips.appendChild(chip(link.label, link.url, periodOf(link, today), nameId));
     });
     cell.appendChild(chips);
     tr.appendChild(cell);
@@ -415,6 +430,8 @@
     var when = el("td", "col-when");
     if (isSeries(ev) && !start) {
       when.appendChild(el("span", "rel rel-series", "\u2014"));
+    } else if (ev.status === "rescheduled") {
+      when.appendChild(el("span", "rel rel-tbc", "tbd"));
     } else if (isTentative(ev)) {
       when.appendChild(el("span", "rel rel-tbc", "tbc"));
     } else {
@@ -501,10 +518,11 @@
 
     els.listUpcoming.textContent = "";
     els.listPast.textContent = "";
-    renderedRows = [];
-    upcoming.concat(past).forEach(function (ev) {
-      var target = isPastEvent(ev, today) ? els.listPast : els.listUpcoming;
-      target.appendChild(renderRow(ev, today));
+    upcoming.forEach(function (ev) {
+      els.listUpcoming.appendChild(renderRow(ev, today));
+    });
+    past.forEach(function (ev) {
+      els.listPast.appendChild(renderRow(ev, today));
     });
     renderedRows = Array.prototype.slice.call(
       document.querySelectorAll(".evt")
@@ -520,7 +538,9 @@
     renderHero(upcoming.filter(isCountdownEligible)[0], today);
 
     els.counts.textContent = "";
-    els.counts.appendChild(el("span", "pulse", "\u25CF "));
+    var pulse = el("span", "pulse", "\u25CF ");
+    pulse.setAttribute("aria-hidden", "true"); // decorative
+    els.counts.appendChild(pulse);
     var cancelledShown = visible.filter(isCancelled).length;
     var reschedShown = visible.filter(function (ev) {
       return ev.status === "rescheduled";
@@ -532,6 +552,11 @@
       (cancelledShown > 0 ? " \u00B7 " + cancelledShown + " cancelled" : "") +
       (reschedShown > 0 ? " \u00B7 " + reschedShown + " rescheduled" : "") +
       (tbcShown > 0 ? " \u00B7 " + tbcShown + " tbc" : "")));
+
+    announce(visible.length === 0
+      ? "0 matches"
+      : visible.length + (visible.length === 1 ? " event" : " events") + " shown" +
+        (hiddenCount > 0 ? ", " + hiddenCount + " past hidden" : ""));
 
     els.meta.textContent = hiddenCount > 0
       ? hiddenCount + " past " + (hiddenCount === 1 ? "event" : "events") +
@@ -548,7 +573,44 @@
     syncURL(false);
   }
 
+  // One polite status line for screen readers, sent once input settles —
+  // re-rendering on every keystroke must not mean announcing on every one.
+  // Typing skips repeats of the same count; a discrete filter change
+  // (dropdown, past toggle, reset, back/forward) always announces, even when
+  // the count is unchanged, so switching filters is never silent.
+  var announceTimer = null;
+  var lastAnnounced = null;
+  var forceAnnounce = false;
+  function announce(text) {
+    var force = forceAnnounce;
+    forceAnnounce = false;
+    if (lastAnnounced === null) { lastAnnounced = text; return; } // initial load
+    clearTimeout(announceTimer);
+    // live regions only speak on a change: clear now, refill after the
+    // pause, so identical text is still announced again
+    if (force) els.srStatus.textContent = "";
+    announceTimer = setTimeout(function () {
+      if (text === lastAnnounced && !force) return;
+      lastAnnounced = text;
+      els.srStatus.textContent = text;
+    }, 600);
+  }
+
+  // A discrete filter change: new history entry, announced on next render.
+  function filterChanged() {
+    forceAnnounce = true;
+    syncURL(true);
+  }
+
   // ---------- keyboard navigation (j/k selection) ----------
+
+  // Selection follows real focus: the selected link is focused, so screen
+  // readers announce it and Tab/Shift-Tab carry on from there.
+  function focusSelected() {
+    var chips = selectedChips();
+    if (chips.length === 0) return;
+    chips[Math.min(linkIndex, chips.length - 1)].focus({ preventScroll: true });
+  }
 
   function markSelected() {
     renderedRows.forEach(function (row, i) {
@@ -572,6 +634,7 @@
     if (chips.length === 0) return;
     linkIndex = Math.max(0, Math.min(chips.length - 1, linkIndex + delta));
     markSelected();
+    focusSelected();
   }
 
   function selectLink(n) {
@@ -579,6 +642,7 @@
     if (n < chips.length) {
       linkIndex = n;
       markSelected();
+      focusSelected();
     }
   }
 
@@ -587,9 +651,27 @@
     selIndex = Math.max(0, Math.min(renderedRows.length - 1, selIndex + delta));
     linkIndex = 0;
     markSelected();
+    focusSelected();
     var row = renderedRows[selIndex];
     if (row.scrollIntoView) row.scrollIntoView({ block: "nearest" });
   }
+
+  // Tabbing onto a link selects its row (and link), so the j/k state and
+  // the visual highlight never disagree with where focus actually is.
+  // Keyboard focus only: a mouse click focuses on mousedown, and selecting
+  // then would show the ordinal counters and shift the chips out from under
+  // the pointer before mouseup — swallowing the click.
+  document.addEventListener("focusin", function (e) {
+    var t = e.target;
+    if (!t.classList || !t.classList.contains("chip")) return;
+    if (!t.matches(":focus-visible")) return;
+    var row = t.closest(".evt");
+    var i = renderedRows.indexOf(row);
+    if (i === -1) return;
+    selIndex = i;
+    linkIndex = Array.prototype.indexOf.call(row.querySelectorAll(".chip"), t);
+    markSelected();
+  });
 
   function openSelected() {
     var chips = selectedChips();
@@ -621,13 +703,18 @@
       return;
     }
     if (e.metaKey || e.ctrlKey || e.altKey) return;
+    // a focused button or link handles Enter itself — don't also open a row link
+    var onControl = /^(BUTTON|A)$/.test(document.activeElement.tagName);
     if (e.key === "/") {
       els.search.focus();
       els.search.select();
       e.preventDefault();
     } else if (e.key === "p" || e.key === "P") {
+      // same path as clicking the checkbox: reset selection, push history
       els.showPast.checked = !els.showPast.checked;
       state.showPast = els.showPast.checked;
+      selIndex = -1;
+      filterChanged();
       render();
     } else if (e.key === "j") {
       moveSel(1);
@@ -639,7 +726,7 @@
       if (selIndex !== -1) { moveLink(-1); e.preventDefault(); }
     } else if (e.key >= "1" && e.key <= "9") {
       if (selIndex !== -1) selectLink(parseInt(e.key, 10) - 1);
-    } else if (e.key === "Enter") {
+    } else if (e.key === "Enter" && !onControl) {
       openSelected();
     }
   });
@@ -654,25 +741,25 @@
   els.region.addEventListener("change", function () {
     state.region = els.region.value;
     selIndex = -1;
-    syncURL(true);
+    filterChanged();
     render();
   });
   els.type.addEventListener("change", function () {
     state.type = els.type.value;
     selIndex = -1;
-    syncURL(true);
+    filterChanged();
     render();
   });
   els.scope.addEventListener("change", function () {
     state.scope = els.scope.value;
     selIndex = -1;
-    syncURL(true);
+    filterChanged();
     render();
   });
   els.showPast.addEventListener("change", function () {
     state.showPast = els.showPast.checked;
     selIndex = -1;
-    syncURL(true);
+    filterChanged();
     render();
   });
 
@@ -684,7 +771,7 @@
     els.scope.value = DEFAULT_SCOPE;
     els.showPast.checked = false;
     selIndex = -1;
-    syncURL(true);
+    filterChanged();
     render();
   }
   els.clearFilters.addEventListener("click", resetFilters);
@@ -694,6 +781,7 @@
   window.addEventListener("popstate", function () {
     stateFromURL();
     applyControls();
+    forceAnnounce = true;
     render();
   });
 
@@ -745,7 +833,9 @@
 
   if (typeof fetch === "function") {
     var fetched = false;
-    fetch(EVENTS_URL, { cache: "no-store" })
+    // no-cache revalidates (ETag) on every load: edits show up immediately,
+    // but an unchanged file isn't downloaded again
+    fetch(EVENTS_URL, { cache: "no-cache" })
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
