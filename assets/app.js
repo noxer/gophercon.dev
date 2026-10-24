@@ -575,16 +575,31 @@
 
   // One polite status line for screen readers, sent once input settles —
   // re-rendering on every keystroke must not mean announcing on every one.
+  // Typing skips repeats of the same count; a discrete filter change
+  // (dropdown, past toggle, reset, back/forward) always announces, even when
+  // the count is unchanged, so switching filters is never silent.
   var announceTimer = null;
   var lastAnnounced = null;
+  var forceAnnounce = false;
   function announce(text) {
+    var force = forceAnnounce;
+    forceAnnounce = false;
     if (lastAnnounced === null) { lastAnnounced = text; return; } // initial load
     clearTimeout(announceTimer);
+    // live regions only speak on a change: clear now, refill after the
+    // pause, so identical text is still announced again
+    if (force) els.srStatus.textContent = "";
     announceTimer = setTimeout(function () {
-      if (text === lastAnnounced) return;
+      if (text === lastAnnounced && !force) return;
       lastAnnounced = text;
       els.srStatus.textContent = text;
     }, 600);
+  }
+
+  // A discrete filter change: new history entry, announced on next render.
+  function filterChanged() {
+    forceAnnounce = true;
+    syncURL(true);
   }
 
   // ---------- keyboard navigation (j/k selection) ----------
@@ -699,7 +714,7 @@
       els.showPast.checked = !els.showPast.checked;
       state.showPast = els.showPast.checked;
       selIndex = -1;
-      syncURL(true);
+      filterChanged();
       render();
     } else if (e.key === "j") {
       moveSel(1);
@@ -726,25 +741,25 @@
   els.region.addEventListener("change", function () {
     state.region = els.region.value;
     selIndex = -1;
-    syncURL(true);
+    filterChanged();
     render();
   });
   els.type.addEventListener("change", function () {
     state.type = els.type.value;
     selIndex = -1;
-    syncURL(true);
+    filterChanged();
     render();
   });
   els.scope.addEventListener("change", function () {
     state.scope = els.scope.value;
     selIndex = -1;
-    syncURL(true);
+    filterChanged();
     render();
   });
   els.showPast.addEventListener("change", function () {
     state.showPast = els.showPast.checked;
     selIndex = -1;
-    syncURL(true);
+    filterChanged();
     render();
   });
 
@@ -756,7 +771,7 @@
     els.scope.value = DEFAULT_SCOPE;
     els.showPast.checked = false;
     selIndex = -1;
-    syncURL(true);
+    filterChanged();
     render();
   }
   els.clearFilters.addEventListener("click", resetFilters);
@@ -766,6 +781,7 @@
   window.addEventListener("popstate", function () {
     stateFromURL();
     applyControls();
+    forceAnnounce = true;
     render();
   });
 

@@ -225,7 +225,9 @@ itself doesn't send CORS headers, the raw endpoints do.
 - **Accessibility:** j/k and the link keys move real focus to the selected
   link (each link is described by its event's name), and Tab keeps the
   selection in sync. Result counts are announced through one polite status
-  line once typing pauses, not per keystroke. Animations stop under
+  line once typing pauses, not per keystroke; every filter change (dropdown,
+  past toggle, reset, back/forward) is announced, even when the count stays
+  the same. Animations stop under
   `prefers-reduced-motion`. Check changes with axe-core
   (`axe.run()` in the browser console, via the axe DevTools extension, or
   Lighthouse's accessibility audit) — it reported 0 WCAG 2.2 AA violations
