@@ -41,6 +41,9 @@ async function probe(url) {
         signal: AbortSignal.timeout(15000),
         headers: { "User-Agent": "gophercon.dev link check (https://gophercon.dev)" },
       });
+      // only the status matters — release the connection instead of
+      // leaving an unread body holding the socket open
+      await res.body?.cancel().catch(() => {});
       if (res.status < 400) return attempt > 1 ? `ok (after ${attempt} tries)` : "ok";
       if (BLOCKED.has(res.status)) return `blocked HTTP ${res.status}`;
       last = `HTTP ${res.status}`;
@@ -53,16 +56,20 @@ async function probe(url) {
   return `${last} (after ${ATTEMPTS} tries)`;
 }
 
-const results = await Promise.allSettled(
-  [...urls.keys()].map((url) => probe(url).then((status) => [url, status]))
-);
+// a few probes at a time — friendlier to shared hosts (many events live on
+// the same few platforms) than firing every request at once
+const CONCURRENCY = 8;
+const queue = [...urls.keys()];
+const statuses = new Map(); // url -> status; probe() never throws
+await Promise.all(Array.from({ length: CONCURRENCY }, async () => {
+  for (let url; (url = queue.shift()) !== undefined; ) statuses.set(url, await probe(url));
+}));
 
 let broken = 0, warned = 0;
-for (let i = 0; i < results.length; i++) {
-  const url = [...urls.keys()][i];
-  const r = results[i];
-  const status = r.status === "fulfilled" ? r.value[1] : `FAIL: ${r.reason?.cause?.code || r.reason?.message || r.reason}`;
-  if (status !== "ok" && !status.startsWith("blocked")) {
+for (const url of urls.keys()) { // report in file order, not completion order
+  const status = statuses.get(url);
+  // "ok (after N tries)" is a pass too — only the first try is bare "ok"
+  if (!status.startsWith("ok") && !status.startsWith("blocked")) {
     broken++;
     console.log(`BROKEN ${status}  ${url}   <- ${urls.get(url).join(", ")}`);
   } else if (status.startsWith("blocked")) {
