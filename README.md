@@ -228,8 +228,8 @@ itself doesn't send CORS headers, the raw endpoints do.
   line once typing pauses, not per keystroke. Animations stop under
   `prefers-reduced-motion`. Check changes with axe-core
   (`axe.run()` in the browser console, via the axe DevTools extension, or
-  Lighthouse's accessibility audit) — the page currently reports 0 WCAG 2.2
-  AA violations.
+  Lighthouse's accessibility audit) — it reported 0 WCAG 2.2 AA violations
+  when last audited (2026-10); re-run it after UI changes.
 
 ## Keyboard shortcuts
 

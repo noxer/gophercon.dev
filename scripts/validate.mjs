@@ -96,12 +96,14 @@ for (const [i, ev] of bundle.events.entries()) {
   }
   for (const [j, loc] of (Array.isArray(locs) ? locs : []).entries()) {
     const lw = `${who} (location ${j + 1})`;
+    if (!loc || typeof loc !== "object") { fail(lw, "must be an object"); continue; }
     if (typeof loc.city !== "string" || !loc.city.trim()) fail(lw, "missing city");
     if (!REGIONS.has(loc.region)) fail(lw, `unknown region: ${loc.region}`);
     if (loc.url !== undefined) checkURL(lw, "url", loc.url);
   }
 
   for (const [j, link] of (ev.links || []).entries()) {
+    if (!link || typeof link !== "object") { fail(`${who} (link ${j + 1})`, "must be an object"); continue; }
     const lw = `${who} (link ${link.label || j + 1})`;
     if (typeof link.label !== "string" || !link.label.trim()) fail(lw, "missing label");
     if (typeof link.url !== "string") fail(lw, "missing url");

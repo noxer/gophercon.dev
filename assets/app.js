@@ -643,9 +643,13 @@
 
   // Tabbing onto a link selects its row (and link), so the j/k state and
   // the visual highlight never disagree with where focus actually is.
+  // Keyboard focus only: a mouse click focuses on mousedown, and selecting
+  // then would show the ordinal counters and shift the chips out from under
+  // the pointer before mouseup — swallowing the click.
   document.addEventListener("focusin", function (e) {
     var t = e.target;
     if (!t.classList || !t.classList.contains("chip")) return;
+    if (!t.matches(":focus-visible")) return;
     var row = t.closest(".evt");
     var i = renderedRows.indexOf(row);
     if (i === -1) return;

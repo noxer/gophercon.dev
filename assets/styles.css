@@ -272,6 +272,7 @@ tr.evt.sel td:first-child { box-shadow: inset 3px 0 0 var(--cyan); }
 .chip .per-future { color: var(--dim); }
 .chip .per-closed { color: var(--faint); }
 .chip.chip-closed { color: var(--faint); }
+.chip.chip-closed:hover, .chip.chip-closed:focus-visible, .chip.chip-closed.chip-sel { color: var(--cyan); }
 
 .col-loc { color: var(--dim); }
 
