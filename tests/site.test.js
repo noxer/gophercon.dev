@@ -10,6 +10,7 @@ const iso = (d) => d.getFullYear() + "-" +
 (async () => {
   const bundle = JSON.parse(fs.readFileSync(path.join(SITE, "events.json"), "utf8"));
   const today = new Date(); today.setHours(0, 0, 0, 0);
+  const realCount = bundle.events.length; // before the synthetic fixtures below
 
   // v2 fixture: hybrid multi-location event with opens/closes/closed link windows
   bundle.events.push({
@@ -66,6 +67,19 @@ const iso = (d) => d.getFullYear() + "-" +
     type: "meetup",
     status: "tentative",
     website: "https://tbd.example/",
+    links: []
+  });
+  // v8 fixture: go-track event that is also tentative — both tags must render
+  bundle.events.push({
+    id: "synthetic-track-tentative",
+    title: "Synthetic Track Expo",
+    description: "test fixture for a tentative go-track event",
+    startDate: iso(new Date(today.getTime() + 40 * DAY)),
+    locations: [{ city: "Trackville", country: "Testland", region: "Europe" }],
+    type: "conference",
+    status: "tentative",
+    scope: "track",
+    website: "https://track.example/",
     links: []
   });
   // v1 fixture: single location object + top-level cfpDeadline
@@ -183,6 +197,18 @@ const iso = (d) => d.getFullYear() + "-" +
   // (go-track events excluded) — matches the app defaults
   const expectedShown = events.filter((e) => shownAlways(e) && e.scope !== "track").length;
   const expectedUpcoming = events.filter((e) => inUpcoming(e) && e.scope !== "track").length;
+  // hero countdown target: soonest upcoming, dated, not cancelled/TBD, in the
+  // default go: dedicated view — derived from the data so the suite doesn't
+  // rot as real events pass (mirrors isCountdownEligible in app.js)
+  const heroEv = events
+    .filter((e) => inUpcoming(e) && e.scope !== "track" && !e.repeat &&
+      e.status !== "cancelled" && e.status !== "rescheduled")
+    .sort((a, b) => sortKey(a) - sortKey(b))[0];
+  const heroTitle = heroEv.title;
+  // the "recently past" block shows only when something ended within the
+  // 7-day window (and isn't a go-track event hidden by the default filter)
+  const expectedRecentPast = events.some((e) =>
+    !inUpcoming(e) && shownAlways(e) && e.scope !== "track");
 
   let failures = 0;
   const check = (name, actual, want) => {
@@ -201,18 +227,21 @@ const iso = (d) => d.getFullYear() + "-" +
   };
 
   // v2 bundle + defaults
-  check("events.json v11 bundle", [bundle.version, events.length, bundle.license], [11, 30, "CC0-1.0"]);
+  check("events.json v11 bundle", [bundle.version, events.length, bundle.license], [11, realCount + 8, "CC0-1.0"]);
   check("load error not shown", doc.getElementById("load-error").hidden, true);
   check("rows shown by default", rows(), expectedShown);
   check("upcoming rows", doc.querySelectorAll("#list-upcoming .evt").length, expectedUpcoming);
   check("hidden note in meta", /hidden \(ended over a week ago\) — press p/.test(doc.getElementById("meta").textContent), true);
+  // "past hidden" in the counts line respects the active filters (go-track
+  // events are already filtered out); the show-past label counts all of them
+  const expectedHiddenFiltered = events.filter((e) => !shownAlways(e) && e.scope !== "track").length;
   check("counts line", doc.getElementById("counts").textContent.includes(
-    `${events.length} listed · ${expectedShown} shown · ${expectedHidden} past hidden`), true);
+    `${events.length} listed · ${expectedShown} shown · ${expectedHiddenFiltered} past hidden`), true);
   check("show-past label", doc.getElementById("show-past-label").textContent, `show ${expectedHidden} past`);
-  check("hero shows soonest event", doc.getElementById("hero-next").textContent.includes("GoLab 2026"), true);
+  check("hero shows soonest event", doc.getElementById("hero-next").textContent.includes(heroTitle), true);
   const heroA = doc.querySelector("#hero-meta a.hero-link");
   check("hero meta URL is a real link", [heroA && heroA.href, heroA && heroA.target],
-    ["https://golab.io/", "_blank"]);
+    [heroEv.website, "_blank"]);
 
   // v11: recurring meetup series
   const openRow = rowByTitle("Synthetic Open Meetup");
@@ -231,14 +260,19 @@ const iso = (d) => d.getFullYear() + "-" +
   check("series render in upcoming table", [
     !!openRow.closest("#list-upcoming"), !!patRow.closest("#list-upcoming")], [true, true]);
   check("series never steal hero countdown",
-    doc.getElementById("hero-next").textContent.includes("GoLab 2026"), true);
+    doc.getElementById("hero-next").textContent.includes(heroTitle), true);
   check("undated series sorts last among upcoming",
     [...doc.querySelectorAll("#list-upcoming .evt")].pop() === openRow, true);
   check("cmd line has hide-past flag", doc.getElementById("cmd").textContent.includes("--hide-past=7d"), true);
 
   // migrated data: GopherCon India CFP now closed (endsAt in the past)
-  check("migrated cfp chip shows closed",
-    chipText(rowByTitle("GopherCon India 2026"), "cfp").text.includes("closed 2026-08-23"), true);
+  const india = rowByTitle("GopherCon India 2026"); // real data: auto-hides a week after 2026-11-22
+  if (india) {
+    check("migrated cfp chip shows closed",
+      chipText(india, "cfp").text.includes("closed 2026-08-23"), true);
+  } else {
+    console.log("SKIP migrated cfp chip: GopherCon India 2026 has auto-hidden as past");
+  }
 
   // v9: unverified review marker
   check("unverified marker renders as ?",
@@ -257,7 +291,7 @@ const iso = (d) => d.getFullYear() + "-" +
   check("cancelled row in upcoming section", cancelRow && cancelRow.parentElement.id, "list-upcoming");
   check("cancelled row class", /cancelled/.test(cancelRow.className), true);
   check("cancelled status tag rendered", cancelRow.querySelector(".status-tag").textContent, "\u2715 cancelled");
-  check("countdown skips cancelled event", doc.getElementById("hero-next").textContent.includes("GoLab 2026"), true);
+  check("countdown skips cancelled event", doc.getElementById("hero-next").textContent.includes(heroTitle), true);
   const expectedCancelledShown = events.filter(e => e.status === "cancelled" && end(e) >= cutoff && e.scope !== "track").length;
   const expectedReschedShown = events.filter(e => e.status === "rescheduled" && e.scope !== "track").length;
   const expectedTbcShown = events.filter(e => e.status === "tentative" && end(e) >= cutoff && e.scope !== "track").length;
@@ -269,7 +303,7 @@ const iso = (d) => d.getFullYear() + "-" +
   check("rescheduled-TBD tag shows new date tbd",
     reschedRow.querySelector(".status-tag").textContent.includes("new date tbd"), true);
   check("countdown skips rescheduled-TBD (sooner than GoLab)",
-    doc.getElementById("hero-next").textContent.includes("GoLab 2026"), true);
+    doc.getElementById("hero-next").textContent.includes(heroTitle), true);
   check("counts line shows rescheduled", doc.getElementById("counts").textContent.includes(`${expectedReschedShown} rescheduled`), true);
 
   // tentative: estimated date gets "\u2248" prefix + "tbc" relative, tag; real seed too
@@ -277,13 +311,28 @@ const iso = (d) => d.getFullYear() + "-" +
   check("tentative row class", /tentative/.test(tentRow.className), true);
   check("tentative iso prefixed with \u2248", tentRow.querySelector(".iso").textContent.startsWith("\u2248"), true);
   check("tentative relative column shows tbc", tentRow.querySelector(".col-when .rel").textContent, "tbc");
-  check("tentative seed (GopherCon 2027) renders tentative",
-    /tentative/.test(rowByTitle("GopherCon 2027").className), true);
-  check("tentative seed CFP link shows opens window",
-    chipText(rowByTitle("GopherCon 2027"), "cfp").text.includes("opens 2027-01-18"), true);
+  // real seed: only while the entry is still tentative and in the default view
+  const gc27 = events.find((e) => e.id === "gophercon-2027");
+  if (gc27 && gc27.status === "tentative" && shownAlways(gc27)) {
+    check("tentative seed (GopherCon 2027) renders tentative",
+      /tentative/.test(rowByTitle("GopherCon 2027").className), true);
+    if (today < new Date("2027-01-18T00:00:00")) {
+      check("tentative seed CFP link shows opens window",
+        chipText(rowByTitle("GopherCon 2027"), "cfp").text.includes("opens 2027-01-18"), true);
+    }
+  } else {
+    console.log("SKIP tentative seed checks: GopherCon 2027 is no longer a visible tentative entry");
+  }
   check("counts line shows tbc", doc.getElementById("counts").textContent.includes(`${expectedTbcShown} tbc`), true);
 
   // search
+  const mentionsBerlin = (e) => [e.title, e.description, e.type]
+    .concat(...locsOf(e).map((l) => [l.city, l.country, l.region]))
+    .join(" ").toLowerCase().includes("berlin");
+  // upcoming soonest-first, then past most-recent-first (app sort order)
+  const listOrder = (evs) => evs.filter(inUpcoming).sort((a, b) => sortKey(a) - sortKey(b))
+    .concat(evs.filter((e) => !inUpcoming(e)).sort((a, b) => start(b) - start(a)))
+    .map((e) => e.title);
   const search = doc.getElementById("search");
   const type = doc.getElementById("type");
   const region = doc.getElementById("region");
@@ -291,7 +340,8 @@ const iso = (d) => d.getFullYear() + "-" +
 
   doSearch("berlin");
   check("search 'berlin' default window (go:dedicated hides DevFest)",
-    [...doc.querySelectorAll(".evt")].map(titleOf), ["GopherCon Europe 2027"]);
+    [...doc.querySelectorAll(".evt")].map(titleOf),
+    listOrder(events.filter((e) => mentionsBerlin(e) && shownAlways(e) && e.scope !== "track")));
   check("cmd line has query", doc.getElementById("cmd").textContent.includes('--query="berlin"'), true);
   check("URL reflects search", win.location.search.includes("q=berlin"), true);
 
@@ -420,17 +470,23 @@ const iso = (d) => d.getFullYear() + "-" +
   scope.value = "all";
   scope.dispatchEvent(new win.Event("change", { bubbles: true }));
   check("go:all reveals go-track events", rows(), events.filter((e) => shownAlways(e)).length);
-  const fosdem = rowByTitle("FOSDEM 2027");
   check("go-track tag rendered",
-    fosdem.querySelector(".status-tag.scope").textContent, "\u25D0 go track");
+    rowByTitle("Synthetic Track Expo").querySelector(".status-tag.scope").textContent, "\u25D0 go track");
+  // real-data row: only in the default view until a week after it ends
   const devfest = rowByTitle("DevFest Berlin 2026");
-  check("devfest go-track tag rendered",
-    devfest.querySelector(".status-tag.scope").textContent, "\u25D0 go track");
-  check("devfest venue has OSM map link",
-    /openstreetmap\.org\/way\/1341514920/.test(
-      devfest.querySelector(".col-loc a.loc-link").href), true);
+  if (devfest) {
+    check("devfest go-track tag rendered",
+      devfest.querySelector(".status-tag.scope").textContent, "\u25D0 go track");
+    check("devfest venue has OSM map link",
+      /openstreetmap\.org\/way\/1341514920/.test(
+        devfest.querySelector(".col-loc a.loc-link").href), true);
+  } else {
+    console.log("SKIP devfest row checks: DevFest Berlin 2026 has auto-hidden as past");
+  }
+  const trackTbc = rowByTitle("Synthetic Track Expo");
   check("track event can also be tentative (both tags)",
-    !!fosdem.querySelector(".status-tag.tentative"), true);
+    [!!trackTbc.querySelector(".status-tag.scope"),
+      !!trackTbc.querySelector(".status-tag.tentative")], [true, true]);
   scope.value = "track";
   scope.dispatchEvent(new win.Event("change", { bubbles: true }));
   check("go:track shows only track events",
@@ -448,7 +504,7 @@ const iso = (d) => d.getFullYear() + "-" +
   check("soonest upcoming first", titleOf(doc.querySelector("#list-upcoming .evt")),
     events.filter((e) => inUpcoming(e) && e.scope !== "track")
       .sort((a, b) => sortKey(a) - sortKey(b))[0].title);
-  check("separator visible with past rows", doc.getElementById("past-separator").hidden, false);
+  check("separator visible iff recently-past rows", doc.getElementById("past-separator").hidden, !expectedRecentPast);
   doc.getElementById("show-past").checked = true;
   doc.getElementById("show-past").dispatchEvent(new win.Event("change", { bubbles: true }));
   const chipCounts = [...doc.querySelectorAll(".evt")].map((r) => r.querySelectorAll(".chip").length);
@@ -471,8 +527,10 @@ const iso = (d) => d.getFullYear() + "-" +
   check("url restores search box", d2.getElementById("search").value, "berlin");
   check("url restores go filter", d2.getElementById("scope").value, "all");
   check("url restores past toggle", d2.getElementById("show-past").checked, true);
+  // expected: every event mentioning berlin, upcoming (soonest first) then
+  // past (most recent first) — derived so it survives events passing
   check("url restores row set", [...d2.querySelectorAll(".evt")].map(titleOf),
-    ["DevFest Berlin 2026", "GopherCon Europe 2027", "GopherCon Europe 2026", "GopherCon Europe 2020"]);
+    listOrder(events.filter(mentionsBerlin)));
   const d3 = await restore("http://localhost:8000/?region=Neverland&go=bogus&type=nope");
   check("invalid url params fall back to defaults",
     [d3.getElementById("region").value, d3.getElementById("type").value,
