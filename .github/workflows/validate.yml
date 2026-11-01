@@ -3,11 +3,17 @@ on:
   push:
     paths:
       - events.json
+      - index.html
+      - sitemap.xml
       - scripts/validate.mjs
+      - scripts/build-seo.mjs
   pull_request:
     paths:
       - events.json
+      - index.html
+      - sitemap.xml
       - scripts/validate.mjs
+      - scripts/build-seo.mjs
   workflow_dispatch:
 
 jobs:
@@ -19,3 +25,6 @@ jobs:
         with:
           node-version: "22"
       - run: node scripts/validate.mjs
+      # index.html's JSON-LD + no-JS list and sitemap.xml are generated from
+      # events.json — fails if someone edited the data without regenerating
+      - run: node scripts/build-seo.mjs --check
