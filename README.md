@@ -22,6 +22,9 @@ CI and via `npm test`.
 | `assets/app.js`     | Fetches `events.json`, renders, filters, keyboard nav |
 | `scripts/validate.mjs` | Offline data check for `events.json` (fields, dates, ids, enums, https) |
 | `scripts/check-links.mjs` | URL validator for every link in `events.json` |
+| `scripts/build-seo.mjs` | Regenerates the crawler-facing block in `index.html` (JSON-LD + no-JS event list) and `sitemap.xml` from `events.json` — see [SEO](#seo) |
+| `robots.txt` / `sitemap.xml` | Crawler hints; `sitemap.xml` is generated |
+| `assets/favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`, `og-image.png` | Icons and the 1200×630 social-preview card |
 | `tests/site.test.js`  | Full-page smoke suite (jsdom): render, filters, keyboard nav, URL state — `npm test` |
 | `package.json` / `package-lock.json` | Dev/test tooling only (jsdom); the site itself still ships zero dependencies |
 | `.github/`          | Issue forms (suggestions/changes) + validate, link-check and test CI |
@@ -158,6 +161,10 @@ Housekeeping rules:
   of the default view automatically and stay available via the past toggle.
 - **v1 compatibility**: old data using a single `location` object or a
   top-level `cfpDeadline` still renders (the fields are normalized at load).
+- **Regenerate after editing:** `node scripts/build-seo.mjs` rewrites the
+  JSON-LD/no-JS block in `index.html` and `sitemap.xml` from the data (CI
+  runs it with `--check` and fails when they're stale). Bump `updated` first
+  — it's the sitemap's `lastmod` and the generator's reference date.
 - Validate after editing: `node scripts/validate.mjs` checks syntax, required
   fields, dates, unique ids, known enum values and https-only URLs (offline,
   instant), and `node scripts/check-links.mjs` to verify every event website, extra link
@@ -170,6 +177,34 @@ plus event websites. Keep it roughly in sync as editions are announced —
 check the wiki once a month, or wire up automation (a scheduled GitHub Action
 that diffs the wiki table against `events.json` and opens a PR is a good
 next step).
+
+## SEO
+
+The event table is rendered by JavaScript, so everything a crawler or
+link-preview bot needs is also present as static HTML:
+
+- **`<head>`**: descriptive title/description (with "Golang"), canonical URL,
+  Open Graph + Twitter card (`assets/og-image.png`, 1200×630), theme colour,
+  file-based favicons (Google's search-result favicon ignores `data:` URIs).
+- **Structured data**: a schema.org `ItemList` of `Event`s (+ `WebSite`) as
+  JSON-LD, generated into `index.html` between the `seo:events` markers.
+  Cancelled / rescheduled-TBD / moved entries map to `EventCancelled` /
+  `EventPostponed` / `EventRescheduled`. **Tentative entries are left out**
+  — their dates are curator estimates and would show up in search as fact.
+  Validate with Google's Rich Results Test or validator.schema.org after
+  changing the generator. New countries: add the ISO code to the `ISO` map in
+  the script (unknown names still pass through as plain text).
+- **No-JS fallback**: the same events as a plain `<ul>` inside `<noscript>`.
+- **Crawling**: `robots.txt` points at `sitemap.xml`; the design mockups in
+  `previews/` carry `noindex` so they don't compete with the real page.
+- **Mobile**: below 560px each row stacks (date + offset on top, event full
+  width) so the table never scrolls sideways — mobile-first indexing
+  penalises horizontal overflow.
+
+The generator is deterministic — it uses `events.json`'s `updated` date
+(not the clock) to drop events that ended over a week before — so the CI
+check only fails on real data edits. The PNGs were rendered once from HTML
+with Playwright and are plain committed files.
 
 ## Suggestion box & triage
 
@@ -189,7 +224,7 @@ Triage loop (roughly weekly, or when notified):
 1. Read the issue; confirm the details from the linked source.
 2. Add or edit the `events.json` entry (unknown dates → `tentative`,
    per the housekeeping rules above).
-3. Run `node scripts/validate.mjs` and `node scripts/check-links.mjs`, commit, close the issue with a
+3. Run `node scripts/validate.mjs`, `node scripts/build-seo.mjs` and `node scripts/check-links.mjs`, commit, close the issue with a
    comment naming the entry `id` ("added as `fosdem-2027`").
 
 GitHub's login requirement keeps most spam out, and the monthly
@@ -260,7 +295,8 @@ page then shows a hint instead of events.
 Live at **https://gophercon.dev** — apex and `www` both point at GitHub
 Pages, which 301s `www` → apex automatically. Pure static files, deployed
 from a branch: `main` / **(root)** — no build step, no extra workflow
-(`.nojekyll` opts out of Jekyll processing; `validate.yml`, `check-links.yml` and `tests.yml` are CI only).
+(`.nojekyll` opts out of Jekyll processing; `validate.yml`, `check-links.yml` and `tests.yml` are CI only —
+`validate.yml` also runs `build-seo.mjs --check`).
 
 The custom domain lives in the repo as a versioned `CNAME` file
 (`gophercon.dev`). DNS — zone at Hetzner DNS (registrar: Key-Systems):

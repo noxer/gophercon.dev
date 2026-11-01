@@ -337,6 +337,10 @@ tr.tentative .iso { color: var(--dim); }
 
 .empty { margin: 2rem 0; color: var(--dim); }
 
+/* no-js fallback list (generated into index.html by scripts/build-seo.mjs) */
+.static-list ul { margin: 0 0 2rem; padding-left: 1.2rem; color: var(--dim); line-height: 1.7; }
+.static-list a { color: var(--cyan); }
+
 .ctl-btn-inline { font-size: 0.78rem; }
 
 .site-footer {
@@ -365,6 +369,37 @@ tr.tentative .iso { color: var(--dim); }
   .col-loc { display: none; }
   .ctl-search input { width: 12ch; }
   .col-date { width: 13ch; }
+}
+
+/* phones: long status tags and link chips ("early-bird tickets · closes
+   …") would otherwise set the event column's minimum width and push the
+   table past the viewport — let them wrap, and clip the separator rule */
+@media (max-width: 560px) {
+  .status-tag, .chip { white-space: normal; }
+  .status-tag { display: inline-block; margin: 0.15rem 0.35rem 0 0; }
+  .line .name { margin-right: 0.5rem; }
+  .col-event { overflow-wrap: anywhere; }
+  .separator td { max-width: 0; overflow: hidden; white-space: nowrap; }
+
+  /* stack each row: date + relative offset on top, the event full width
+     below (:not([hidden]) so hidden tbodies stay hidden) */
+  .events thead { display: none; }
+  .events tbody:not([hidden]) { display: block; }
+  tr.evt {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    border-bottom: 1px solid var(--hair);
+  }
+  tr.evt td { display: block; border-bottom: 0; width: auto; }
+  tr.evt .col-date { grid-column: 1; grid-row: 1; padding-bottom: 0.2rem; }
+  tr.evt .col-when { grid-column: 2; grid-row: 1; padding: 0.8rem 0 0.2rem; }
+  tr.evt .col-event { grid-column: 1 / -1; grid-row: 2; padding-top: 0; }
+  tr.evt .col-loc { display: none; }
+  tr.evt:hover, tr.evt.sel { background: var(--bg-hover); }
+  tr.evt.sel td:first-child { box-shadow: none; }
+  tr.evt.sel { box-shadow: inset 3px 0 0 var(--cyan); }
+  tr.evt td:first-child, tr.evt .col-event { padding-left: 0.6rem; }
+  .separator tr, .separator td { display: block; }
 }
 
 /* ---------- motion ---------- */
