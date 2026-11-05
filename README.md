@@ -109,8 +109,8 @@ Housekeeping rules:
   `↝ rescheduled from 2027-04-14`. The term is direction-neutral on purpose:
   "postponed" only means *later*, and "moved up" ambiguously means *earlier*.
 - **Postponed, new date unknown**: `"status": "rescheduled"` — tag
-  `↝ rescheduled — new date tbd`, countdown skips it, and it never
-  auto-hides, so attendees waiting for the new dates aren't left staring at
+  `↝ rescheduled — new date tbd`, countdown skips it, it sorts below all
+  dated upcoming events, and it never auto-hides, so attendees waiting for the new dates aren't left staring at
   a missing entry. When dates land, replace the status with real dates +
   `rescheduledFrom`; if it dies, switch to `cancelled`.
 - **Announced, dates TBD**: `"status": "tentative"` + a curator *estimate*
@@ -258,7 +258,10 @@ itself doesn't send CORS headers, the raw endpoints do.
 - **Search** matches title, description, type, city, country, and region
   (all tokens must match).
 - **Sort order:** upcoming events first (next soonest first), past events
-  below (most recently ended first). The hero countdown always shows the
+  below (most recently ended first). Entries without a usable date close
+  the upcoming block: `rescheduled` (new date tbd) events — their listed
+  date is the old one, so sorting by it would pin them to the top — then
+  undated meetup series. The hero countdown always shows the
   soonest upcoming event.
 - **Accessibility:** j/k and the link keys move real focus to the selected
   link (each link is described by its event's name), and Tab keeps the

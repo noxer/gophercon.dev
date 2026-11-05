@@ -109,6 +109,14 @@
   // A series never becomes "past": there is always a next gathering. Nor
   // does an event waiting on its new date ("rescheduled") — its listed dates
   // are the old ones, and it belongs with the upcoming events.
+  // Upcoming-block sort bands: 0 = dated (incl. pattern series), 1 =
+  // rescheduled with the new date unknown, 2 = undated series.
+  function sortRank(ev, today) {
+    if (ev.status === "rescheduled") return 1;
+    if (isSeries(ev) && !seriesNext(ev, today)) return 2;
+    return 0;
+  }
+
   function isPastEvent(ev, today) {
     if (isSeries(ev) || ev.status === "rescheduled") return false;
     return endDateOf(ev) < today;
@@ -501,10 +509,11 @@
     var upcoming = visible.filter(function (ev) {
       return !isPastEvent(ev, today);
     }).sort(function (a, b) {
-      // undated series ("monthly") sit at the bottom of the upcoming block;
-      // pattern series sort by their computed next date among real events
-      var ua = isSeries(a) && !seriesNext(a, today) ? 1 : 0;
-      var ub = isSeries(b) && !seriesNext(b, today) ? 1 : 0;
+      // entries without a usable date sit at the bottom of the upcoming
+      // block: rescheduled-TBD events (their listed date is the old one, so
+      // sorting by it would pin them to the top) and then undated series
+      // ("monthly"); pattern series sort by their computed next date
+      var ua = sortRank(a, today), ub = sortRank(b, today);
       if (ua !== ub) return ua - ub;
       var ea = effStart(a, today), eb = effStart(b, today);
       if (!ea || !eb) return 0;

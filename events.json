@@ -1,6 +1,6 @@
 {
   "version": 11,
-  "updated": "2026-11-01",
+  "updated": "2026-11-05",
   "source": "https://go.dev/wiki/Conferences",
   "license": "CC0-1.0",
   "schema": {
@@ -584,6 +584,30 @@
         {
           "label": "Go devroom CFP",
           "url": "https://github.com/go-devroom/cfp"
+        }
+      ]
+    },
+    {
+      "id": "gophercon-spain-2027",
+      "unverified": true,
+      "title": "GopherCon Spain 2027",
+      "description": "A new three-day Go conference planned for March 2027 at La Nave, Madrid’s innovation centre (800+ capacity): technical deep dives, hands-on workshops and networking. Announced, dates TBC — the mid-March start is a curator estimate; the organizers promise the full agenda for January 2027.",
+      "startDate": "2027-03-15",
+      "endDate": "2027-03-17",
+      "status": "tentative",
+      "type": "conference",
+      "website": "https://gophercon-spain.pages.dev/en",
+      "locations": [
+        {
+          "city": "Madrid",
+          "country": "Spain",
+          "region": "Europe"
+        }
+      ],
+      "links": [
+        {
+          "label": "Venue",
+          "url": "https://lanavemadrid.com/en/"
         }
       ]
     },
