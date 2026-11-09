@@ -1,6 +1,6 @@
 {
   "version": 11,
-  "updated": "2026-11-05",
+  "updated": "2026-11-09",
   "source": "https://go.dev/wiki/Conferences",
   "license": "CC0-1.0",
   "schema": {
@@ -416,12 +416,13 @@
       "endDate": "2027-04-23",
       "type": "conference",
       "website": "https://gophercamp.cz/",
-      "description": "The Czech Go community’s conference returns to Brno for its third edition: workshop day plus a day of talks.",
+      "description": "The Czech Go community’s conference returns to Clubco in Brno for its third edition: a workshop day (Thu) plus a day of talks (Fri). Super-early-bird tickets (€69) are announced for until 31 December 2026.",
       "locations": [
         {
           "city": "Brno",
           "country": "Czechia",
-          "region": "Europe"
+          "region": "Europe",
+          "url": "https://www.openstreetmap.org/node/8848071783"
         }
       ],
       "links": [
@@ -429,6 +430,10 @@
           "label": "CFP",
           "url": "https://sessionize.com/gophercamp27",
           "endsAt": "2027-02-28"
+        },
+        {
+          "label": "Venue",
+          "url": "https://clubco.cz/"
         }
       ]
     },
@@ -554,6 +559,10 @@
           "endsAt": "2026-11-01"
         },
         {
+          "label": "Tickets",
+          "url": "https://gdg.community.dev/events/details/google-gdg-berlin-presents-devfest-berlin-2026-1/"
+        },
+        {
           "label": "GDG Berlin Golang",
           "url": "https://gdg.community.dev/gdg-berlin-golang/"
         },
@@ -566,7 +575,7 @@
     {
       "id": "fosdem-2027",
       "title": "FOSDEM 2027",
-      "description": "Brussels’ free open-source developer festival at the ULB Solbosch campus, with a dedicated Go devroom (confirmed in the 2027 room list) — Go talks inside a much bigger, multi-language conference.",
+      "description": "Brussels’ free open-source developer festival at the ULB Solbosch campus, with a dedicated Go devroom (accepted for 2027, in person on Saturday 30 January: 25-minute talks + Q&A) — Go talks inside a much bigger, multi-language conference.",
       "startDate": "2027-01-30",
       "endDate": "2027-01-31",
       "scope": "track",
@@ -583,7 +592,13 @@
       "links": [
         {
           "label": "Go devroom CFP",
-          "url": "https://github.com/go-devroom/cfp"
+          "url": "https://pretalx.fosdem.org/fosdem-2027/cfp",
+          "startsAt": "2026-10-27",
+          "endsAt": "2026-11-30"
+        },
+        {
+          "label": "Go devroom announcement",
+          "url": "https://lists.fosdem.org/hyperkitty/list/fosdem@lists.fosdem.org/thread/JM3JBC64FTN7DK4PVI3HRMO57EMVTPQF/"
         }
       ]
     },
