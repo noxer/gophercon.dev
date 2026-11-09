@@ -36,7 +36,10 @@ const relevant = bundle.events
   .filter((ev) => !ev.repeat)
   .filter((ev) => ev.status === "rescheduled" ||
     new Date(endOf(ev) + "T00:00:00Z") >= new Date(ref.getTime() - 7 * DAY))
-  .sort((a, b) => a.startDate.localeCompare(b.startDate) || a.title.localeCompare(b.title));
+  // rescheduled-TBD entries last (their listed date is the old one) — same
+  // order as the site's upcoming block
+  .sort((a, b) => (a.status === "rescheduled") - (b.status === "rescheduled") ||
+    a.startDate.localeCompare(b.startDate) || a.title.localeCompare(b.title));
 
 // Structured data only for events whose dates are real: tentative entries
 // carry a curator estimate, and marking that up would put a made-up date in

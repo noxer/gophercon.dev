@@ -181,8 +181,12 @@ const iso = (d) => d.getFullYear() + "-" +
     }
     return null;
   };
+  // bands mirror sortRank in app.js: dated first, then rescheduled-TBD
+  // (by old date), then undated series
+  const BAND = 1e15; // larger than any epoch-ms timestamp
   const sortKey = (e) => {
-    if (e.repeat) { const n = effNext(e); return n === null ? Infinity : n; }
+    if (e.status === "rescheduled") return BAND + start(e);
+    if (e.repeat) { const n = effNext(e); return n === null ? 3 * BAND : n; }
     return start(e);
   };
   const locsOf = (e) => (e.locations && e.locations.length) ? e.locations
@@ -192,6 +196,10 @@ const iso = (d) => d.getFullYear() + "-" +
   // upcoming block — mirrors isHiddenByDefault/isPastEvent in app.js
   const shownAlways = (e) => end(e) >= cutoff || e.status === "rescheduled";
   const inUpcoming = (e) => end(e) >= today.getTime() || e.status === "rescheduled";
+  // upcoming soonest-first, then past most-recent-first (app sort order)
+  const listOrder = (evs) => evs.filter(inUpcoming).sort((a, b) => sortKey(a) - sortKey(b))
+    .concat(evs.filter((e) => !inUpcoming(e)).sort((a, b) => start(b) - start(a)))
+    .map((e) => e.title);
   const expectedHidden = events.filter((e) => !shownAlways(e)).length;
   // default view: past beyond the 7d window hidden AND go: dedicated
   // (go-track events excluded) — matches the app defaults
@@ -304,6 +312,17 @@ const iso = (d) => d.getFullYear() + "-" +
     reschedRow.querySelector(".status-tag").textContent.includes("new date tbd"), true);
   check("countdown skips rescheduled-TBD (sooner than GoLab)",
     doc.getElementById("hero-next").textContent.includes(heroTitle), true);
+  // its listed (old) date is sooner than every real event, yet it must sit
+  // below all dated upcoming rows — just above the undated series
+  const upTitles = [...doc.querySelectorAll("#list-upcoming .evt")].map(titleOf);
+  const datedUp = events.filter((e) => inUpcoming(e) && e.scope !== "track" &&
+    e.status !== "rescheduled" && sortKey(e) < BAND);
+  check("rescheduled-TBD sorts after every dated upcoming row",
+    datedUp.every((e) => upTitles.indexOf(e.title) < upTitles.indexOf("Synthetic Rescheduled Conf")), true);
+  check("rescheduled-TBD sorts above the undated series",
+    upTitles.indexOf("Synthetic Rescheduled Conf") < upTitles.indexOf("Synthetic Open Meetup"), true);
+  check("upcoming block order (dated, rescheduled-TBD, undated series)", upTitles,
+    listOrder(events.filter((e) => inUpcoming(e) && e.scope !== "track")));
   check("counts line shows rescheduled", doc.getElementById("counts").textContent.includes(`${expectedReschedShown} rescheduled`), true);
 
   // tentative: estimated date gets "\u2248" prefix + "tbc" relative, tag; real seed too
@@ -329,10 +348,6 @@ const iso = (d) => d.getFullYear() + "-" +
   const mentionsBerlin = (e) => [e.title, e.description, e.type]
     .concat(...locsOf(e).map((l) => [l.city, l.country, l.region]))
     .join(" ").toLowerCase().includes("berlin");
-  // upcoming soonest-first, then past most-recent-first (app sort order)
-  const listOrder = (evs) => evs.filter(inUpcoming).sort((a, b) => sortKey(a) - sortKey(b))
-    .concat(evs.filter((e) => !inUpcoming(e)).sort((a, b) => start(b) - start(a)))
-    .map((e) => e.title);
   const search = doc.getElementById("search");
   const type = doc.getElementById("type");
   const region = doc.getElementById("region");
