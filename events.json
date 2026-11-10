@@ -1,6 +1,6 @@
 {
   "version": 11,
-  "updated": "2026-11-09",
+  "updated": "2026-11-10",
   "source": "https://go.dev/wiki/Conferences",
   "license": "CC0-1.0",
   "schema": {
@@ -13,7 +13,7 @@
     "locations": [
       {
         "city": "one entry per location; multiple entries = multi-city or hybrid (use region \"Online\" for the virtual part)",
-        "country": "",
+        "country": "country name — required; \"\" for the online part of an event",
         "region": "Africa | Asia | Europe | North America | South America | Oceania | Online",
         "url": "optional — map link for THIS location, preferably OpenStreetMap (renders with ⌖ in the location column); venue pages belong in links[] as a \"Venue\" link"
       }
@@ -416,7 +416,7 @@
       "endDate": "2027-04-23",
       "type": "conference",
       "website": "https://gophercamp.cz/",
-      "description": "The Czech Go community’s conference returns to Clubco in Brno for its third edition: a workshop day (Thu) plus a day of talks (Fri). Super-early-bird tickets (€69) are announced for until 31 December 2026.",
+      "description": "The Czech Go community’s conference returns to Clubco in Brno for its third edition: a workshop day (Thu) plus a day of talks (Fri).",
       "locations": [
         {
           "city": "Brno",
@@ -522,11 +522,18 @@
     {
       "id": "gophercon-2027",
       "title": "GopherCon 2027",
-      "description": "Announced, dates TBC — start is a curator estimate based on recent editions (late Jul/early Aug). Organizers say the Call for Speakers opens 2027-01-18.",
+      "description": "Announced, dates and city TBC — the start is a curator estimate based on recent editions (late Jul/early Aug), and every in-person edition so far has been in the USA. Organizers say the Call for Speakers opens 2027-01-18.",
       "startDate": "2027-08-02",
       "status": "tentative",
       "type": "conference",
       "website": "https://www.gophercon.com/",
+      "locations": [
+        {
+          "city": "TBD",
+          "country": "USA",
+          "region": "North America"
+        }
+      ],
       "links": [
         {
           "label": "CFP",
