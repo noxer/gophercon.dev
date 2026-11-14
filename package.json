@@ -2,9 +2,10 @@
   "name": "gophercon.dev",
   "version": "1.0.0",
   "private": true,
-  "description": "Tests only — the site itself has no dependencies (plain static files)",
+  "description": "Build and test tooling only — the published site has no runtime dependencies",
   "scripts": {
-    "test": "node tests/site.test.js && node --test tests/validate.test.js"
+    "test": "node tests/site.test.js && node --test tests/validate.test.js tests/build.test.js",
+    "build": "node scripts/build-site.mjs"
   },
   "devDependencies": {
     "jsdom": "^30.1.3"

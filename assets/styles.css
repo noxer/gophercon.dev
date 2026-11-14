@@ -346,9 +346,6 @@ tr.tentative .iso { color: var(--dim); }
 
 .empty { margin: 2rem 0; color: var(--dim); }
 
-/* no-js fallback list (generated into index.html by scripts/build-seo.mjs) */
-.static-list ul { margin: 0 0 2rem; padding-left: 1.2rem; color: var(--dim); line-height: 1.7; }
-.static-list a { color: var(--cyan); }
 
 .ctl-btn-inline { font-size: 0.78rem; }
 
