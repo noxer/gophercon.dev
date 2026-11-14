@@ -833,7 +833,10 @@
     render();
   });
 
+  // Replaces the options rather than appending: the published page arrives
+  // with the dropdowns already filled (scripts/build-site.mjs prerenders it).
   function fillSelect(select, values) {
+    select.textContent = "";
     var all = el("option", null, "all");
     all.value = "all";
     select.appendChild(all);

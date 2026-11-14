@@ -1,0 +1,49 @@
+name: deploy
+# Builds the site (scripts/build-site.mjs) and publishes it to GitHub Pages.
+# Needs Settings → Pages → Source: "GitHub Actions".
+on:
+  push:
+    branches: [main]
+  schedule:
+    # daily: "+12d", the hero and the upcoming/past split age by the day
+    - cron: "23 4 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # sitemap lastmod reads the history of events.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # bad data or a broken page never goes live
+      - run: node scripts/validate.mjs
+      - run: npm test
+      - run: node scripts/build-site.mjs _site
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

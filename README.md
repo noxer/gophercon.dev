@@ -6,10 +6,12 @@ that ended more than a week ago.
 
 Design: terminal/console aesthetic — dark Go-navy, Go Mono (self-hosted,
 BSD-3), ISO dates
-with relative day offsets (`+10d`), and keyboard-driven navigation. No build
-step, no third-party fonts or scripts, no dependencies — plain files, served
-over http. The only dependency lives in the test suite (jsdom), which runs in
-CI and via `npm test`.
+with relative day offsets (`+10d`), and keyboard-driven navigation. No
+third-party fonts or scripts, no runtime dependencies — plain files, served
+over http. The repo works as-is (`python3 -m http.server`); for publishing, a
+small build (`scripts/build-site.mjs`, run by the deploy workflow) prerenders
+the event list into the page. jsdom, the only dependency, is used by that
+build and the tests.
 
 ## Files
 
@@ -22,14 +24,15 @@ CI and via `npm test`.
 | `assets/app.js`     | Fetches `events.json`, renders, filters, keyboard nav |
 | `scripts/validate.mjs` | Offline data check for `events.json` (fields, dates, ids, enums, https, unknown/misspelled field names) |
 | `scripts/check-links.mjs` | URL validator for every link in `events.json` |
-| `scripts/build-seo.mjs` | Regenerates the crawler-facing block in `index.html` (JSON-LD + no-JS event list) and `sitemap.xml` from `events.json` — see [SEO](#seo) |
-| `robots.txt` / `sitemap.xml` | Crawler hints; `sitemap.xml` is generated |
+| `scripts/build-site.mjs` | Builds the published site into `_site/`: prerendered event list, JSON-LD, `sitemap.xml` — see [Publishing](#publishing) (`npm run build`) |
+| `robots.txt` | Crawler hints; points at the `sitemap.xml` the build writes |
 | `assets/favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`, `og-image.png` | Icons and the 1200×630 social-preview card |
 | `tests/site.test.js`  | Full-page smoke suite (jsdom): render, filters, keyboard nav, URL state — `npm test` |
 | `tests/validate.test.js` | Tests for `scripts/validate.mjs` on small fixture bundles (never the real data) — also `npm test` |
-| `package.json` / `package-lock.json` | Dev/test tooling only (jsdom); the site itself still ships zero dependencies |
-| `.github/`          | Issue forms (suggestions/changes) + validate, link-check and test CI |
-| `previews/`         | Static design mockups from the exploration phase — published with the site (Pages serves the whole repo); delete the folder to unpublish them |
+| `tests/build.test.js` | Tests for `scripts/build-site.mjs`: published files, prerendered view, JSON-LD, redraw without duplicates — also `npm test` |
+| `package.json` / `package-lock.json` | Build/test tooling only (jsdom); the published site ships zero dependencies |
+| `.github/`          | Issue forms (suggestions/changes), the deploy workflow, and validate, link-check and test CI |
+| `previews/`         | Static design mockups from the exploration phase — kept in the repo, not published |
 
 The site fetches `events.json` at runtime, so browsers block it when the page
 is opened via `file://`. For local development, serve the folder:
@@ -171,10 +174,10 @@ Housekeeping rules:
   of the default view automatically and stay available via the past toggle.
 - **v1 compatibility**: old data using a single `location` object or a
   top-level `cfpDeadline` still renders (the fields are normalized at load).
-- **Regenerate after editing:** `node scripts/build-seo.mjs` rewrites the
-  JSON-LD/no-JS block in `index.html` and `sitemap.xml` from the data (CI
-  runs it with `--check` and fails when they're stale). Bump `updated` first
-  — it's the sitemap's `lastmod` and the generator's reference date.
+- **Nothing to regenerate:** the deploy workflow rebuilds the published
+  page from `events.json` on every push to `main` and once a day, so an edit
+  made in GitHub's web editor goes live on its own. Set `updated` when you
+  change data — it's informational (the sitemap's `lastmod` comes from git).
 - Validate after editing: `node scripts/validate.mjs` checks syntax, required
   fields, dates, unique ids, known enum values, https-only URLs and unknown
   field names (offline, instant), and `node scripts/check-links.mjs` to verify every event website, extra link
@@ -190,33 +193,39 @@ next step).
 
 ## SEO
 
-The event table is rendered by JavaScript, so everything a crawler or
-link-preview bot needs is also present as static HTML:
+The event table is drawn by JavaScript, but the published page arrives
+with it already drawn (see [Publishing](#publishing)), so crawlers, link
+previews and visitors without JavaScript get the full list:
 
 - **`<head>`**: descriptive title/description (with "Golang"), canonical URL,
   Open Graph + Twitter card (`assets/og-image.png`, 1200×630), theme colour,
   file-based favicons (Google's search-result favicon ignores `data:` URIs).
+- **Prerendered list**: the default view (hero, counts, every row with its
+  links) is in the HTML, rendered by the real `app.js` at build time. In the
+  browser `app.js` redraws the same rows, so nothing shifts on load (layout
+  shift 0, was 0.6 desktop / 0.8 phone when the table appeared after the
+  data fetch).
 - **Structured data**: a schema.org `ItemList` of `Event`s (+ `WebSite`) as
-  JSON-LD, generated into `index.html` between the `seo:events` markers.
+  JSON-LD in `<head>`, written by the build. Note: Google's event results
+  only use markup on pages about a single event, so this list is unlikely
+  to earn event rich results — it's valid and harmless, nothing more.
   Cancelled / rescheduled-TBD / moved entries map to `EventCancelled` /
   `EventPostponed` / `EventRescheduled`. **Tentative entries are left out**
   — their dates are curator estimates and would show up in search as fact.
   Validate with Google's Rich Results Test or validator.schema.org after
-  changing the generator. New countries: add the ISO code to the `ISO` map in
-  the script (unknown names still pass through as plain text).
-- **No-JS fallback**: the same events as a plain `<ul>` inside `<noscript>`.
-- **Crawling**: `robots.txt` points at `sitemap.xml`; the design mockups in
-  `previews/` carry `noindex` so they don't compete with the real page.
+  changing the build. New countries: add the ISO code to the `ISO` map in
+  `scripts/build-site.mjs` (unknown names still pass through as plain text).
+- **Crawling**: `robots.txt` points at `sitemap.xml`, whose `lastmod` is the
+  last commit touching `events.json`. Only site files are published, so the
+  README, scripts, tests and `previews/` mockups aren't crawlable.
 - **Mobile**: below 560px each row stacks (date + offset on top, event full
   width) so the table never scrolls sideways — mobile-first indexing
   penalises horizontal overflow. Below 760px the location column is dropped
   and the same location shows as a line under the event name instead, so
   no width loses the place or its map link.
 
-The generator is deterministic — it uses `events.json`'s `updated` date
-(not the clock) to drop events that ended over a week before — so the CI
-check only fails on real data edits. The PNGs were rendered once from HTML
-with Playwright and are plain committed files.
+The PNGs were rendered once from HTML with Playwright and are plain
+committed files.
 
 ## Suggestion box & triage
 
@@ -236,7 +245,7 @@ Triage loop (roughly weekly, or when notified):
 1. Read the issue; confirm the details from the linked source.
 2. Add or edit the `events.json` entry (unknown dates → `tentative`,
    per the housekeeping rules above).
-3. Run `node scripts/validate.mjs`, `node scripts/build-seo.mjs` and `node scripts/check-links.mjs`, commit, close the issue with a
+3. Run `node scripts/validate.mjs` and `node scripts/check-links.mjs`, commit, close the issue with a
    comment naming the entry `id` ("added as `fosdem-2027`").
 
 GitHub's login requirement keeps most spam out, and the monthly
@@ -249,8 +258,8 @@ link rot filed *by* the community as report-a-change issues.
 `events.json` is public, licensed CC0, and the canonical URL is
 `https://gophercon.dev/events.json`. Point people to
 `https://raw.githubusercontent.com/noxer/gophercon.dev/main/events.json`
-(or jsDelivr) when they want to `fetch()` it from another site — GitHub Pages
-itself doesn't send CORS headers, the raw endpoints do.
+(or jsDelivr) as alternatives. `fetch()` from another site works with any of
+them — GitHub Pages sends `Access-Control-Allow-Origin: *`.
 
 ## Behavior
 
@@ -303,22 +312,41 @@ itself doesn't send CORS headers, the raw endpoints do.
 | `Escape` | clear search / drop selection           |
 
 
-## Running & deploying
+## Running locally
 
-Serve the folder locally (`python3 -m http.server 8000`) — opening the page
-via `file://` won't work because the browser blocks fetching local JSON; the
-page then shows a hint instead of events.
+Serve the folder (`python3 -m http.server 8000`) — the page renders itself
+in the browser; no build needed. Opening it via `file://` won't work because
+the browser blocks fetching local JSON; the page then shows a hint instead
+of events. To see exactly what would be published: `npm ci && npm run build`,
+then serve `_site/`.
+
+## Publishing
+
+`.github/workflows/deploy.yml` publishes to GitHub Pages on every push to
+`main`, once a day (relative dates and the upcoming/past split age by the
+day), and on demand (Actions → deploy → Run workflow). It validates the
+data, runs `npm test`, builds `_site/` with `scripts/build-site.mjs` and
+deploys it — bad data or a failing test never goes live.
+
+What gets published: `index.html` (with the default view prerendered and
+JSON-LD added), `events.json`, `assets/`, `robots.txt`, `sitemap.xml`,
+`CNAME`. Nothing else from the repo.
+
+Settings → Pages → **Source: GitHub Actions** is required (the old
+"deploy from a branch" source would serve the repo root unbuilt).
+
+Scheduled workflows stop after 60 days without repository activity; if the
+daily rebuild stops, push anything or re-enable it under Actions.
 
 ## Hosting on GitHub Pages
 
 Live at **https://gophercon.dev** — apex and `www` both point at GitHub
-Pages, which 301s `www` → apex automatically. Pure static files, deployed
-from a branch: `main` / **(root)** — no build step, no extra workflow
-(`.nojekyll` opts out of Jekyll processing; `validate.yml`, `check-links.yml` and `tests.yml` are CI only —
-`validate.yml` also runs `build-seo.mjs --check`).
+Pages, which 301s `www` → apex automatically. `validate.yml`,
+`check-links.yml` and `tests.yml` are CI only; `deploy.yml` publishes.
 
-The custom domain lives in the repo as a versioned `CNAME` file
-(`gophercon.dev`). DNS — zone at Hetzner DNS (registrar: Key-Systems):
+The custom domain is set in Settings → Pages (the versioned `CNAME` file
+records it; with Actions deploys GitHub reads the setting).
+DNS — zone at Hetzner DNS (registrar: Key-Systems):
 
 - `A` records for `@` (apex): `185.199.108.153`, `185.199.109.153`,
   `185.199.110.153`, `185.199.111.153`
