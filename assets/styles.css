@@ -32,6 +32,11 @@
 
 * { box-sizing: border-box; }
 
+/* The hidden attribute has to win over the display values components set
+   further down (.ctl is inline-flex): an author rule otherwise overrides the
+   browser's own [hidden] { display: none } and the element stays visible. */
+[hidden] { display: none !important; }
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -276,6 +281,10 @@ tr.evt.sel td:first-child { box-shadow: inset 3px 0 0 var(--cyan); }
 
 .col-loc { color: var(--dim); }
 
+/* the location again, as a line inside the event cell — shown only where
+   the location column is hidden (small screens, below) */
+.loc-inline { display: none; color: var(--dim); font-size: 0.78rem; margin-top: 0.15rem; }
+
 .loc-link { color: var(--dim); text-decoration: none; }
 .loc-link:hover, .loc-link:focus-visible { color: var(--cyan); text-decoration: underline; }
 
@@ -367,6 +376,7 @@ tr.tentative .iso { color: var(--dim); }
 
 @media (max-width: 760px) {
   .col-loc { display: none; }
+  .loc-inline { display: block; }
   .ctl-search input { width: 12ch; }
   .col-date { width: 13ch; }
 }

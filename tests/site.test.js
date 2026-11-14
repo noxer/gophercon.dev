@@ -39,7 +39,7 @@ const iso = (d) => d.getFullYear() + "-" +
     title: "Synthetic Cancelled Summit",
     description: "test fixture for cancelled status",
     startDate: iso(new Date(today.getTime() + 3 * DAY)),
-    locations: [{ city: "Canceltown", country: "Nowhereland", region: "Europe" }],
+    locations: [{ city: "Cancel\u00F3polis", country: "Nowhereland", region: "Europe" }],
     type: "conference",
     status: "cancelled",
     website: "https://cancelled.example/",
@@ -140,14 +140,14 @@ const iso = (d) => d.getFullYear() + "-" +
   const html = fs.readFileSync(path.join(SITE, "index.html"), "utf8")
     .replace('<script src="assets/app.js" defer></script>',
       () => "<script>" + appJs + "</script>");
-  const page = (url) => new JSDOM(html, {
+  const page = (url, data = bundle) => new JSDOM(html, {
     runScripts: "dangerously",
     url,
     beforeParse(window) {
       // jsdom has no fetch; serve the site files with the injected fixtures.
       window.fetch = async (u) => {
         if (u === "events.json") {
-          const text = JSON.stringify(bundle);
+          const text = JSON.stringify(data);
           return { ok: true, status: 200, json: async () => JSON.parse(text), text: async () => text };
         }
         const text = fs.readFileSync(path.join(SITE, u), "utf8");
@@ -347,6 +347,7 @@ const iso = (d) => d.getFullYear() + "-" +
   // search
   const mentionsBerlin = (e) => [e.title, e.description, e.type]
     .concat(...locsOf(e).map((l) => [l.city, l.country, l.region]))
+    .concat((e.links || []).map((l) => l.label))
     .join(" ").toLowerCase().includes("berlin");
   const search = doc.getElementById("search");
   const type = doc.getElementById("type");
@@ -400,6 +401,21 @@ const iso = (d) => d.getFullYear() + "-" +
   doc.getElementById("clear-filters").click();
   check("after clear: rows", rows(), expectedShown);
 
+  // search finds what a row shows: accents folded, dates, tags, link labels.
+  // Every query carries "synthetic", so real events can never join the result.
+  const found = (q) => { doSearch(q); return [...doc.querySelectorAll(".evt")].map(titleOf); };
+  check("search ignores accents (typed without)", found("synthetic cancelopolis"), ["Synthetic Cancelled Summit"]);
+  check("search ignores accents (typed with, any case)", found("SYNTHETIC CANCEL\u00D3POLIS"), ["Synthetic Cancelled Summit"]);
+  check("search matches link labels", found("synthetic pre-registration"), ["Synthetic Hybrid Fest"]);
+  const hybridStart = new Date(today.getTime() + 30 * DAY);
+  const monthOf = (d) => d.toLocaleString("en", { month: "long" });
+  check("search matches the ISO date", found("synthetic " + iso(hybridStart)), ["Synthetic Hybrid Fest"]);
+  check("search matches the month name", found("synthetic hybrid " + monthOf(hybridStart)), ["Synthetic Hybrid Fest"]);
+  check("search rejects another month",
+    found("synthetic hybrid " + monthOf(new Date(hybridStart.getFullYear(), hybridStart.getMonth() + 2, 1))), []);
+  check("search matches the status tag text", found("synthetic new date tbd"), ["Synthetic Rescheduled Conf"]);
+  doSearch("");
+
   // multi-location: hybrid 2021 event searchable by city + "Online" region
   doc.getElementById("show-past").checked = true;
   doc.getElementById("show-past").dispatchEvent(new win.Event("change", { bubbles: true }));
@@ -417,6 +433,18 @@ const iso = (d) => d.getFullYear() + "-" +
   check("synthetic multi-loc column",
     rowByTitle("Synthetic Hybrid Fest").querySelector(".col-loc").textContent,
     "Prague, Czechia \u2197 +2 more · Europe / Online");
+  // the same location again inside the event cell — the stylesheet shows it
+  // where the location column is hidden (narrow screens): same text and
+  // link, placed between the name and the description
+  const synLoc = rowByTitle("Synthetic Hybrid Fest");
+  const textOf = (node) => node ? node.textContent : null; // a missing node is a FAIL, not a crash
+  check("inline location mirrors the column",
+    textOf(synLoc.querySelector(".loc-inline")), textOf(synLoc.querySelector(".col-loc")));
+  check("inline location keeps the link",
+    (synLoc.querySelector(".loc-inline a.loc-link") || {}).href, "https://prague.example/venue");
+  check("inline location sits between name and description",
+    [...synLoc.querySelector(".col-event").children].map((c) => c.className),
+    ["line", "loc-inline", "note", "chips"]);
   region.value = "all";
   region.dispatchEvent(new win.Event("change", { bubbles: true }));
   // v7: OSM map link on the location (\u2316) + Venue chip on the link row
@@ -531,8 +559,8 @@ const iso = (d) => d.getFullYear() + "-" +
   check("ISO date range format", golabIso, "2026-11-01/03");
 
   // URL -> state: a refreshed or shared URL restores the exact same view
-  const restore = async (url) => {
-    const d = page(url);
+  const restore = async (url, data) => {
+    const d = page(url, data);
     for (let i = 0; i < 30 && d.window.document.querySelectorAll(".evt").length === 0; i++) {
       await new Promise((res) => setTimeout(res, 100));
     }
@@ -551,6 +579,28 @@ const iso = (d) => d.getFullYear() + "-" +
     [d3.getElementById("region").value, d3.getElementById("type").value,
      d3.getElementById("scope").value, d3.defaultView.location.search],
     ["all", "all", "dedicated", ""]);
+
+  // a filter with one choice is hidden — and a stale ?type= link goes with it
+  check("type filter shown while the data has two types",
+    doc.getElementById("type").closest(".ctl").hidden, false);
+  const oneType = Object.assign({}, bundle, { events: events.filter((e) => e.type === "conference") });
+  const d4 = await restore("http://localhost:8000/?type=conference", oneType);
+  check("type filter hidden while the data has a single type",
+    d4.getElementById("type").closest(".ctl").hidden, true);
+  check("stale type param dropped with the hidden filter",
+    [d4.getElementById("type").value, d4.defaultView.location.search], ["all", ""]);
+
+  // Layout rules jsdom can't evaluate (no layout engine, and it lets [hidden]
+  // win regardless of author styles, unlike browsers): assert the stylesheet
+  // still carries them. Both were real bugs found in a browser — the reset
+  // button showed while hidden, and phones lost the location entirely.
+  const css = fs.readFileSync(path.join(SITE, "assets/styles.css"), "utf8");
+  check("stylesheet: [hidden] beats component display rules",
+    /\[hidden\]\s*\{\s*display:\s*none\s*!important/.test(css), true);
+  const narrow = (css.match(/@media \(max-width: 760px\) \{([\s\S]*?)\n\}/) || [])[1] || "";
+  check("stylesheet: inline location shown where the column is hidden",
+    [/\.col-loc\s*\{\s*display:\s*none/.test(narrow), /\.loc-inline\s*\{\s*display:\s*block/.test(narrow)],
+    [true, true]);
 
   console.log(failures === 0 ? "\nALL CHECKS PASSED" : `\n${failures} CHECK(S) FAILED`);
   process.exit(failures === 0 ? 0 : 1);

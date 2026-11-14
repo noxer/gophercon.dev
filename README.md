@@ -20,12 +20,13 @@ CI and via `npm test`.
 | `assets/styles.css` | Terminal styling (dark Go-navy, monospace)          |
 | `assets/fonts/`     | Self-hosted Go Mono webfonts (woff2, 2 faces; BSD-3, see `assets/fonts/LICENSE`) |
 | `assets/app.js`     | Fetches `events.json`, renders, filters, keyboard nav |
-| `scripts/validate.mjs` | Offline data check for `events.json` (fields, dates, ids, enums, https) |
+| `scripts/validate.mjs` | Offline data check for `events.json` (fields, dates, ids, enums, https, unknown/misspelled field names) |
 | `scripts/check-links.mjs` | URL validator for every link in `events.json` |
 | `scripts/build-seo.mjs` | Regenerates the crawler-facing block in `index.html` (JSON-LD + no-JS event list) and `sitemap.xml` from `events.json` — see [SEO](#seo) |
 | `robots.txt` / `sitemap.xml` | Crawler hints; `sitemap.xml` is generated |
 | `assets/favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`, `og-image.png` | Icons and the 1200×630 social-preview card |
 | `tests/site.test.js`  | Full-page smoke suite (jsdom): render, filters, keyboard nav, URL state — `npm test` |
+| `tests/validate.test.js` | Tests for `scripts/validate.mjs` on small fixture bundles (never the real data) — also `npm test` |
 | `package.json` / `package-lock.json` | Dev/test tooling only (jsdom); the site itself still ships zero dependencies |
 | `.github/`          | Issue forms (suggestions/changes) + validate, link-check and test CI |
 | `previews/`         | Static design mockups from the exploration phase — published with the site (Pages serves the whole repo); delete the folder to unpublish them |
@@ -156,7 +157,16 @@ Housekeeping rules:
 - **New regions/types need no app code** — filter dropdowns are generated
   from whatever values appear in the file. Add the new value to the lists at
   the top of `scripts/validate.mjs` (and to the `schema` object) so CI
-  accepts it.
+  accepts it. A filter with a single choice is hidden: the `type:` control
+  only appears once the data holds a second type.
+- **New fields do need registering**: the validator rejects field names it
+  doesn't know (with a "did you mean" hint), because a misspelled optional
+  field is otherwise ignored silently — `stauts` leaves a cancelled event
+  looking scheduled, `endAt` drops a deadline. Add a new field to `FIELDS`
+  in `scripts/validate.mjs` (and to the `schema` object).
+- **Every location needs `country`** — use `""` for the online part of an
+  event. For a tentative event whose city isn't announced, `"city": "TBD"`
+  plus the known country/region keeps it findable through the region filter.
 - Old editions hide themselves: entries that ended over a week ago drop out
   of the default view automatically and stay available via the past toggle.
 - **v1 compatibility**: old data using a single `location` object or a
@@ -166,8 +176,8 @@ Housekeeping rules:
   runs it with `--check` and fails when they're stale). Bump `updated` first
   — it's the sitemap's `lastmod` and the generator's reference date.
 - Validate after editing: `node scripts/validate.mjs` checks syntax, required
-  fields, dates, unique ids, known enum values and https-only URLs (offline,
-  instant), and `node scripts/check-links.mjs` to verify every event website, extra link
+  fields, dates, unique ids, known enum values, https-only URLs and unknown
+  field names (offline, instant), and `node scripts/check-links.mjs` to verify every event website, extra link
   and location map URL still resolves (reports HTTP/TLS/DNS failures and
   bot-wall warnings). Both run in CI on every push and pull request touching
   `events.json`; the link check also runs monthly — domains go stale.
@@ -199,7 +209,9 @@ link-preview bot needs is also present as static HTML:
   `previews/` carry `noindex` so they don't compete with the real page.
 - **Mobile**: below 560px each row stacks (date + offset on top, event full
   width) so the table never scrolls sideways — mobile-first indexing
-  penalises horizontal overflow.
+  penalises horizontal overflow. Below 760px the location column is dropped
+  and the same location shows as a line under the event name instead, so
+  no width loses the place or its map link.
 
 The generator is deterministic — it uses `events.json`'s `updated` date
 (not the clock) to drop events that ended over a week before — so the CI
@@ -255,8 +267,12 @@ itself doesn't send CORS headers, the raw endpoints do.
 - **Past events:** an event is considered past once its *end* date is over.
   Events that ended more than 7 days ago are hidden by default; the
   `[x] show 10 past` toggle reveals them below a `── recently past ──` rule.
-- **Search** matches title, description, type, city, country, and region
-  (all tokens must match).
+- **Search** finds what a row shows: title, description, type, every
+  location (city, country, region), the dates as displayed (`2027-02`) and
+  their month names (`february`, `feb`), the status and go-track tags
+  (`cancelled`, `tbc`) and the link labels (`cfp`, `tickets`, `videos`).
+  All tokens must match; case and accents are ignored (`florianopolis`
+  finds Florianópolis).
 - **Sort order:** upcoming events first (next soonest first), past events
   below (most recently ended first). Entries without a usable date close
   the upcoming block: `rescheduled` (new date tbd) events — their listed

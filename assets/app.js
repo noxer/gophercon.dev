@@ -28,6 +28,7 @@
     empty: document.getElementById("empty"),
     resetEmpty: document.getElementById("reset-empty")
   };
+  var typeCtl = els.type.closest(".ctl"); // the "type: [select]" control as a whole
 
   // ---------- date helpers ----------
 
@@ -106,9 +107,6 @@
     return isSeries(ev) ? seriesNext(ev, today) : parseDate(ev.startDate);
   }
 
-  // A series never becomes "past": there is always a next gathering. Nor
-  // does an event waiting on its new date ("rescheduled") — its listed dates
-  // are the old ones, and it belongs with the upcoming events.
   // Upcoming-block sort bands: 0 = dated (incl. pattern series), 1 =
   // rescheduled with the new date unknown, 2 = undated series.
   function sortRank(ev, today) {
@@ -117,6 +115,9 @@
     return 0;
   }
 
+  // A series never becomes "past": there is always a next gathering. Nor
+  // does an event waiting on its new date ("rescheduled") — its listed dates
+  // are the old ones, and it belongs with the upcoming events.
   function isPastEvent(ev, today) {
     if (isSeries(ev) || ev.status === "rescheduled") return false;
     return endDateOf(ev) < today;
@@ -235,14 +236,39 @@
 
   // ---------- filtering ----------
 
-  function matchesSearch(ev) {
-    if (!state.q) return true;
+  // Lowercase and strip diacritics, so "florianopolis" finds "Florianópolis".
+  function fold(s) {
+    return String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  }
+
+  var MONTHS = ["january", "february", "march", "april", "may", "june", "july",
+    "august", "september", "october", "november", "december"];
+
+  // What a row shows is what search finds: title, description, type, every
+  // location, the dates as displayed (ISO) plus their month names, the
+  // status / go-track tags and the link labels.
+  function haystack(ev) {
     var parts = [ev.title, ev.description, ev.type];
     locationsOf(ev).forEach(function (l) {
-      parts.push(l.city + " " + l.country + " " + l.region);
+      parts.push(l.city, l.country, l.region);
     });
-    var hay = parts.join(" ").toLowerCase();
-    return state.q.toLowerCase().split(/\s+/).every(function (token) {
+    if (isSeries(ev)) {
+      parts.push(ev.repeat.freq); // its startDate is the founding date, never shown
+    } else {
+      parts.push(ev.startDate, ev.endDate,
+        MONTHS[parseDate(ev.startDate).getMonth()], MONTHS[endDateOf(ev).getMonth()]);
+    }
+    var tag = statusTag(ev);
+    if (tag) parts.push(tag.text);
+    if (ev.scope === "track") parts.push("go track");
+    linksOf(ev).forEach(function (l) { parts.push(l.label); });
+    return fold(parts.filter(Boolean).join(" "));
+  }
+
+  function matchesSearch(ev) {
+    if (!state.q) return true;
+    var hay = haystack(ev);
+    return fold(state.q).split(/\s+/).every(function (token) {
       return hay.indexOf(token) !== -1;
     });
   }
@@ -317,7 +343,9 @@
       els.region.value = "all";
     }
     els.type.value = state.type;
-    if (els.type.value !== state.type) {
+    // also when the type control is hidden (single type, see init): a filter
+    // nobody can see or change must not linger from an old share link
+    if (els.type.value !== state.type || typeCtl.hidden) {
       state.type = "all";
       els.type.value = "all";
     }
@@ -353,6 +381,40 @@
       if (period.cls === "per-closed") a.classList.add("chip-closed");
     }
     return a;
+  }
+
+  // Where: the first location (linked to its map or venue page when it has
+  // one), "+N more" for multi-location events, then the region(s). Each row
+  // renders this twice — as the location column, and as a line inside the
+  // event cell that the stylesheet shows only where the column is hidden
+  // (narrow screens) — so the place is never lost. Exactly one of the two is
+  // displayed at any width; the other is display:none, out of the tab order
+  // and the accessibility tree.
+  function fillLocation(node, ev) {
+    var locs = locationsOf(ev);
+    var regs = uniqueSorted(locs.map(function (l) {
+      return l.region;
+    }).filter(Boolean));
+    var leadText = locs[0].city + (locs[0].country ? ", " + locs[0].country : "");
+    var lead;
+    if (locs[0].url) {
+      var isMap = /openstreetmap\.org/.test(locs[0].url);
+      lead = el("a", "loc-link",
+        leadText + " " + (isMap ? "\u2316" : "\u2197"));
+      lead.href = locs[0].url;
+      lead.target = "_blank";
+      lead.rel = "noopener noreferrer";
+    } else {
+      lead = el("span", null, leadText);
+    }
+    node.appendChild(lead);
+    var label = locs.length > 1 ? " +" + (locs.length - 1) + " more" : "";
+    if (regs.length) label += " \u00B7 " + regs.join(" / ");
+    node.appendChild(el("span", null, label));
+    node.title = locs.map(function (l) {
+      return l.city + (l.country ? ", " + l.country : "");
+    }).join(" / ");
+    return node;
   }
 
   function renderRow(ev, today) {
@@ -396,6 +458,7 @@
       line.appendChild(uv);
     }
     cell.appendChild(line);
+    cell.appendChild(fillLocation(el("div", "loc-inline"), ev));
 
     var note = el("div", "note");
     note.appendChild(el("span", "desc", ev.description));
@@ -409,31 +472,7 @@
     cell.appendChild(chips);
     tr.appendChild(cell);
 
-    var locs = locationsOf(ev);
-    var regs = uniqueSorted(locs.map(function (l) {
-      return l.region;
-    }).filter(Boolean));
-    var loc = el("td", "col-loc");
-    var leadText = locs[0].city + (locs[0].country ? ", " + locs[0].country : "");
-    var lead;
-    if (locs[0].url) {
-      var isMap = /openstreetmap\.org/.test(locs[0].url);
-      lead = el("a", "loc-link",
-        leadText + " " + (isMap ? "\u2316" : "\u2197"));
-      lead.href = locs[0].url;
-      lead.target = "_blank";
-      lead.rel = "noopener noreferrer";
-    } else {
-      lead = el("span", null, leadText);
-    }
-    loc.appendChild(lead);
-    var label = locs.length > 1 ? " +" + (locs.length - 1) + " more" : "";
-    if (regs.length) label += " \u00B7 " + regs.join(" / ");
-    loc.appendChild(el("span", null, label));
-    loc.title = locs.map(function (l) {
-      return l.city + (l.country ? ", " + l.country : "");
-    }).join(" / ");
-    tr.appendChild(loc);
+    tr.appendChild(fillLocation(el("td", "col-loc"), ev));
 
     var when = el("td", "col-when");
     if (isSeries(ev) && !start) {
@@ -817,9 +856,12 @@
       });
       return acc;
     }, [])));
-    fillSelect(els.type, uniqueSorted(events.map(function (ev) {
+    var types = uniqueSorted(events.map(function (ev) {
       return ev.type;
-    })));
+    }));
+    fillSelect(els.type, types);
+    // a filter with a single choice is noise — hidden until a second type ships
+    typeCtl.hidden = types.length < 2;
     stateFromURL();
     applyControls();
     render();
